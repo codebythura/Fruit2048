@@ -2,7 +2,10 @@ package com.codebythura.fruit2048.ui.home
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.codebythura.fruit2048.ui.home.components.TileData
+import com.codebythura.fruit2048.data.Direction
+import com.codebythura.fruit2048.data.GameLogic
+import com.codebythura.fruit2048.data.TileData
+import com.codebythura.fruit2048.data.emptyGrid
 
 
 class HomeViewModel : ViewModel() {
@@ -19,10 +22,10 @@ class HomeViewModel : ViewModel() {
 
     fun onSwipe(direction: Direction) {
         gridData.value = when(direction) {
-            Direction.Left -> GameLogic.swipeToLeft(gridData.value)
-            Direction.Right -> GameLogic.swipeToRight(gridData.value)
-            Direction.Up -> GameLogic.swipeUp(gridData.value)
-            Direction.Down -> GameLogic.swipeDown(gridData.value)
+            Direction.LEFT -> GameLogic.swipeToLeft(gridData.value)
+            Direction.RIGHT -> GameLogic.swipeToRight(gridData.value)
+            Direction.UP -> GameLogic.swipeUp(gridData.value)
+            Direction.DOWN -> GameLogic.swipeDown(gridData.value)
         }
         gridData.value = GameLogic.addRandomData(gridData.value)
     }

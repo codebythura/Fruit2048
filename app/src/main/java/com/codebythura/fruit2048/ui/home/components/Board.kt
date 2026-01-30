@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.codebythura.fruit2048.data.TileData
 import com.codebythura.fruit2048.ui.theme.Fruit2048Theme
 
 
@@ -27,13 +28,6 @@ val defaultBoardBgColor = Color(0xFFE8E3E3)
 val defaultTileBgColor = Color(0xFFd6d3d1)
 val defaultCornerRadius = 12.dp
 const val defaultDurationMillis = 200
-
-data class TileData(
-    val id: String,
-    var value: Int,
-    var row: Int,
-    var col: Int,
-)
 
 @Composable
 fun Board(
@@ -86,7 +80,7 @@ private fun Modifier.boardBackground(
 ) = this then aspectRatio(1f).drawBehind {
     val cornerRadiusPx = cornerRadius.toPx()
     val paddingPx = paddingDp.toPx()
-    val boardSizePx = minOf(size.width, size.height)
+    val boardSizePx = size.minDimension
     val tileSizePx = (boardSizePx - paddingPx * 5) / 4
     drawRoundRect(
         color = backgroundColor,

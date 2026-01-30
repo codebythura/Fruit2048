@@ -1,4 +1,4 @@
-package com.codebythura.fruit2048.ui.home
+package com.codebythura.fruit2048.data
 
 import kotlin.random.Random
 

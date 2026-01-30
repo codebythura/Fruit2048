@@ -1,4 +1,4 @@
-package com.codebythura.fruit2048.ui.home.components
+package com.codebythura.fruit2048.data
 
 import androidx.compose.ui.graphics.Color
 

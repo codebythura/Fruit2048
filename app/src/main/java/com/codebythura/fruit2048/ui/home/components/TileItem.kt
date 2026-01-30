@@ -25,6 +25,9 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.ui.graphics.graphicsLayer
+import com.codebythura.fruit2048.data.Tile
+import com.codebythura.fruit2048.data.TileData
+import com.codebythura.fruit2048.data.tileMap
 import kotlinx.coroutines.delay
 
 @Composable

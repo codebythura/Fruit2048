@@ -1,45 +1,89 @@
 package com.codebythura.fruit2048.ui.home
 
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.codebythura.fruit2048.data.Direction
+import com.codebythura.fruit2048.data.TileData
+import com.codebythura.fruit2048.ui.home.components.ActionsRow
+import com.codebythura.fruit2048.ui.home.components.AppTitle
 import com.codebythura.fruit2048.ui.home.components.Board
-import com.codebythura.fruit2048.ui.home.components.TileData
+import com.codebythura.fruit2048.ui.home.components.ScoreRow
+import kotlin.math.abs
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
     val viewModel: HomeViewModel = viewModel()
-    HomeContent(tileData = viewModel.tileData,modifier = modifier)
+    Scaffold(
+        modifier = modifier,
+        content = { innerPadding ->
+            HomeContent(
+                tileData = viewModel.tileData,
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .onSwipe(onSwipe = viewModel::onSwipe)
+                    .padding(start = 24.dp, end = 24.dp, top = 64.dp)
+            )
+        }
+    )
 }
 
-//@Preview(showBackground = true)
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeContent(
     tileData: List<TileData>,
     modifier: Modifier = Modifier
 ) {
-    Scaffold(
+    Column(
         modifier = modifier,
-        topBar = { TopAppBar(title = {}) },
-        content = {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
-            ) {
-                Board(
-                    tileData = tileData,
-                    modifier = Modifier.padding(12.dp))
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        AppTitle()
+        ScoreRow()
+        ActionsRow()
+        Board(tileData = tileData)
+    }
+}
+
+
+private fun Modifier.onSwipe(
+    threshold: Float = 50f,
+    onSwipe: (Direction) -> Unit
+): Modifier = this.pointerInput(Unit) {
+    var dragAmountX = 0f
+    var dragAmountY = 0f
+    detectDragGestures(
+        onDragStart = {
+            dragAmountX = 0f
+            dragAmountY = 0f
+        },
+        onDrag = { change, dragAmount ->
+            change.consume()
+            dragAmountX += dragAmount.x
+            dragAmountY += dragAmount.y
+        },
+        onDragEnd = {
+            val absX = abs(dragAmountX)
+            val absY = abs(dragAmountY)
+
+            if (absX > threshold || absY > threshold) {
+                if (absX > absY) {
+                    // Horizontal Swipe
+                    onSwipe(if (dragAmountX > 0) Direction.RIGHT else Direction.LEFT)
+                } else {
+                    // Vertical Swipe
+                    onSwipe(if (dragAmountY > 0) Direction.DOWN else Direction.UP)
+                }
             }
         }
     )
