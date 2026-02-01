@@ -6,9 +6,26 @@ import kotlin.random.Random
 const val GRID_SIZE = 4
 typealias GridMatrix = Array<Array<GridData?>>
 
-val emptyGrid: GridMatrix = Array(GRID_SIZE) { Array(GRID_SIZE) { null } }
+val EMPTY_GRID: GridMatrix = Array(GRID_SIZE) { Array(GRID_SIZE) { null } }
 
 object GameLogic {
+
+    fun checkIfGameOver(grid: GridMatrix): Boolean {
+        for (r in 0 until GRID_SIZE) {
+            for (c in 0 until GRID_SIZE) {
+                val currentValue = grid[r][c] ?: return false
+                if(c + 1 < GRID_SIZE) {
+                    val rightValue = grid[r][c + 1]
+                    if (rightValue == null || rightValue.value == currentValue.value) return false
+                }
+                if(r + 1 < GRID_SIZE) {
+                    val downValue = grid[r + 1][c]
+                    if (downValue == null || downValue.value == currentValue.value) return false
+                }
+            }
+        }
+        return true
+    }
 
     fun addRandomData(gridData: GridMatrix,count: Int = 1) : GridMatrix {
         if (count <= 0) throw IllegalArgumentException("Count must be greater than 0")
@@ -30,33 +47,35 @@ object GameLogic {
         return newGrid
     }
 
-    fun swipeDown(gridData: GridMatrix): GridMatrix {
+    fun swipeDown(gridData: GridMatrix): Pair<GridMatrix,Int> {
         val rotated90Clockwise = rotate90Clockwise(gridData)
-        val swipedToLeft = swipeToLeft(rotated90Clockwise)
+        val (swipedToLeft,score) = swipeToLeft(rotated90Clockwise)
         val rotated90AntiClockwise = rotate90AntiClockwise(swipedToLeft)
-        return rotated90AntiClockwise
+        return Pair(rotated90AntiClockwise,score)
     }
 
-    fun swipeUp(gridData: GridMatrix): GridMatrix {
+    fun swipeUp(gridData: GridMatrix): Pair<GridMatrix,Int> {
         val rotated90AntiClockwise = rotate90AntiClockwise(gridData)
-        val swipedToLeft = swipeToLeft(rotated90AntiClockwise)
+        val (swipedToLeft,score) = swipeToLeft(rotated90AntiClockwise)
         val rotated90Clockwise = rotate90Clockwise(swipedToLeft)
-        return rotated90Clockwise
+        return Pair(rotated90Clockwise,score)
     }
 
-    fun swipeToRight(gridData: GridMatrix): GridMatrix {
+    fun swipeToRight(gridData: GridMatrix): Pair<GridMatrix,Int> {
         val reversed = gridData.map { row -> row.reversedArray() }.toTypedArray()
-        val swipedToLeft = swipeToLeft(reversed)
+        val (swipedToLeft,score) = swipeToLeft(reversed)
         val swipedToRight = swipedToLeft.map { row -> row.reversedArray() }.toTypedArray()
-        return swipedToRight
+        return Pair(swipedToRight,score)
     }
 
-    fun swipeToLeft(gridData: GridMatrix): GridMatrix {
+    fun swipeToLeft(gridData: GridMatrix): Pair<GridMatrix,Int> {
+        var totalScore = 0
         val swipedToLeft = gridData.map { row ->
-            val merged = mergeToLeft(row)
+            val (merged,score) = mergeToLeft(row)
+            totalScore += score
             padToGridSize(merged)
         }.toTypedArray()
-        return swipedToLeft
+        return Pair(swipedToLeft,totalScore)
     }
 
     private fun rotate90AntiClockwise(gridData: GridMatrix): GridMatrix {
@@ -80,21 +99,23 @@ object GameLogic {
         return array + Array(missing) { null }
     }
 
-    private fun mergeToLeft(array: Array<GridData?>): Array<GridData?> {
+    private fun mergeToLeft(array: Array<GridData?>): Pair<Array<GridData?>,Int> {
         val notNulls = array.filterNotNull()
         val merged = mutableListOf<GridData>()
+        var mergedScore : Int = 0
         var i = 0
         while (i < notNulls.size) {
             if (i + 1 < notNulls.size && notNulls[i].value == notNulls[i + 1].value) {
                 val data = notNulls[i]
                 merged.add(data.copy(value = data.value * 2))
                 i += 2
+                mergedScore += data.value * 2
             } else {
                 merged.add(notNulls[i])
                 i++
             }
         }
-        return merged.toTypedArray()
+        return Pair(merged.toTypedArray(),mergedScore)
     }
 
 }

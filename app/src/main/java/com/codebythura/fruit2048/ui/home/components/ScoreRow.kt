@@ -19,7 +19,10 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun ScoreRow(modifier: Modifier = Modifier) {
+fun ScoreRow(
+    score: Int,
+    modifier: Modifier = Modifier
+) {
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -31,7 +34,7 @@ fun ScoreRow(modifier: Modifier = Modifier) {
         )
         ScoreContainer(
             title = "Current Score",
-            score = 200,
+            score = score,
             modifier = Modifier.weight(1f),
         )
     }
@@ -45,9 +48,8 @@ private fun ScoreContainer(
 ) {
     Surface(
         modifier = modifier,
-        color = defaultBoardBgColor.copy(alpha = 0.6f),
+        color = defaultTileBgColor,
         shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(width = 1.dp, color = Color.Gray.copy(alpha = 0.2f)),
     ) {
         Column(
             modifier = Modifier.padding(12.dp),

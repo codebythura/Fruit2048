@@ -5,9 +5,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -22,12 +24,18 @@ import com.codebythura.fruit2048.R
 
 
 @Composable
-fun ActionsRow(modifier: Modifier = Modifier) {
+fun ActionsRow(
+    onStartNewGame: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally)
     ) {
-        NewGameButton(modifier = Modifier.weight(1f))
+        NewGameButton2(
+            onClick = onStartNewGame,
+            modifier = Modifier.weight(1f)
+        )
         UndoGameButton(modifier = Modifier)
     }
 }
@@ -36,13 +44,12 @@ fun ActionsRow(modifier: Modifier = Modifier) {
 fun UndoGameButton(modifier: Modifier = Modifier) {
     Surface(
         onClick = {},
-//        color = defaultBoardBgColor,
+        color = MaterialTheme.colorScheme.primary,
         modifier = modifier.size(48.dp),
         shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(width = 1.dp, color = Color.Gray.copy(alpha = 0.4f)),
         content = {
             Image(
-                painter = painterResource(R.drawable.undo_light),
+                painter = painterResource(R.drawable.undo_dark),
                 contentDescription = "Undo",
                 modifier = Modifier.padding(8.dp)
             )
@@ -54,10 +61,9 @@ fun UndoGameButton(modifier: Modifier = Modifier) {
 private fun NewGameButton(modifier: Modifier = Modifier) {
     Surface(
         onClick = {},
-//        color = defaultBoardBgColor,
         modifier = modifier.size(48.dp),
         shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(width = 1.dp, color = Color.Gray.copy(alpha = 0.4f)),
+        border = BorderStroke(width = 1.dp, color = Color.Gray),
         content = {
             Row(
                 modifier = modifier
@@ -72,10 +78,39 @@ private fun NewGameButton(modifier: Modifier = Modifier) {
                 )
                 Text(
                     text = "New Game",
-                    color = MaterialTheme.colorScheme.primary,
+                    color = Color.Black,
                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
                 )
             }
         }
     )
+}
+
+@Composable
+fun NewGameButton2(
+    onClick: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = onClick,
+        shape = RoundedCornerShape(12.dp),
+        modifier = modifier.height(48.dp)
+    ) {
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(
+                painter = painterResource(R.drawable.restart_dark),
+                contentDescription = "restart",
+            )
+            Text(
+                text = "New Game",
+                color = MaterialTheme.colorScheme.onPrimary,
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
+            )
+        }
+    }
+
 }

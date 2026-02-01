@@ -8,15 +8,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.codebythura.fruit2048.data.Direction
 import com.codebythura.fruit2048.data.TileData
 import com.codebythura.fruit2048.ui.home.components.ActionsRow
 import com.codebythura.fruit2048.ui.home.components.AppTitle
 import com.codebythura.fruit2048.ui.home.components.Board
+import com.codebythura.fruit2048.ui.home.components.GameOverDialog
 import com.codebythura.fruit2048.ui.home.components.ScoreRow
 import kotlin.math.abs
 
@@ -24,11 +27,20 @@ import kotlin.math.abs
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
     val viewModel: HomeViewModel = viewModel()
+    val state by viewModel.gameUIState.collectAsStateWithLifecycle()
+    if (state.isGameOver) {
+        GameOverDialog(
+            score = state.score,
+            onGameRestart = viewModel::startNewGame
+        )
+    }
     Scaffold(
         modifier = modifier,
         content = { innerPadding ->
             HomeContent(
-                tileData = viewModel.tileData,
+                score = state.score,
+                tileData = state.tileData,
+                onStartNewGame = viewModel::startNewGame,
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize()
@@ -41,7 +53,9 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 
 @Composable
 fun HomeContent(
+    score: Int,
     tileData: List<TileData>,
+    onStartNewGame: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -49,8 +63,8 @@ fun HomeContent(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         AppTitle()
-        ScoreRow()
-        ActionsRow()
+        ScoreRow(score = score)
+        ActionsRow(onStartNewGame = onStartNewGame)
         Board(tileData = tileData)
     }
 }
