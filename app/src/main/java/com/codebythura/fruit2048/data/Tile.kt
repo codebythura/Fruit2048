@@ -7,7 +7,7 @@ data class Tile(val value: Int, val icon: String, val color: Color, val borderCo
 val tileMap = mapOf<Int, Tile>(
     2 to Tile(value = 2, icon = "\uD83C\uDF49", color = Color(0xFFb5e5bb), borderColor = Color(0xFF6bcb77)),
     4 to Tile(4, icon = "\uD83C\uDF53", color = Color(0xFFffbcdf), borderColor = Color(0xFFff7abe)),
-    8 to Tile(8, icon = "\uD83C\uDF4C", color = Color(0xFFf7eda6), borderColor = Color(0xFFf0da4e)),
+    8 to Tile(8, icon = "\uD83C\uDF4C", color = Color(0xFFF3E56C), borderColor = Color(0xFFEFD54A)),
     16 to Tile(16, icon = "\uD83C\uDF4A", color = Color(0xFFf6bf9e), borderColor = Color(0xFFed803d)),
     32 to Tile(32, icon = "\uD83C\uDF47", color = Color(0xFFcba6ff), borderColor = Color(0xFF974dff)),
     64 to Tile(64, icon = "\uD83E\uDD6D", color = Color(0xFFffdb80), borderColor = Color(0xFFffb600)),

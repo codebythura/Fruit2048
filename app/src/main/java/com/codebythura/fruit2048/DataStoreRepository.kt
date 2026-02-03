@@ -10,18 +10,27 @@ import javax.inject.Inject
 
 interface DataStoreRepository {
     fun observeBestScore(): Flow<Int>
-    suspend fun updateBestScoreIfNecessary(newScore: Int)
+    suspend fun updateBestScoreIfNecessary(newScore: Int) : Boolean
 }
 
-class DataStoreRepositoryImpl @Inject constructor(private val datastore: DataStore<AppData>) : DataStoreRepository {
+class DataStoreRepositoryImpl @Inject constructor(private val datastore: DataStore<AppData>) :
+    DataStoreRepository {
 
     override fun observeBestScore() = datastore.data.map { it.bestScore }.flowOn(Dispatchers.IO)
 
-    override suspend fun updateBestScoreIfNecessary(newScore: Int): Unit = withContext(Dispatchers.IO) {
-        datastore.updateData { currentData ->
-            currentData.copy { bestScore = maxOf(newScore,bestScore) }
+    override suspend fun updateBestScoreIfNecessary(newScore: Int): Boolean =
+        withContext(Dispatchers.IO) {
+            var updated = false
+            datastore.updateData { currentData ->
+                currentData.copy {
+                    if (newScore > bestScore) {
+                        bestScore = newScore
+                        updated = true
+                    }
+                }
+            }
+            return@withContext updated
         }
-    }
 
 
 }

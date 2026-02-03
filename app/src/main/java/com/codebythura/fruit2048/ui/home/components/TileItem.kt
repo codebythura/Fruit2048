@@ -35,7 +35,7 @@ fun TileItem(
     tileData: TileData,
     modifier: Modifier = Modifier
 ) {
-    val scale = remember { Animatable(0f) }
+    val scale = remember { Animatable(if(tileData.shouldAnimated) 0f else 1f) }
     LaunchedEffect(tileData.id) {
         if(tileData.shouldAnimated) {
             delay(defaultDurationMillis.toLong())
@@ -55,9 +55,6 @@ fun TileItem(
                 ),
             )
         }
-        else {
-            scale.snapTo(1f)
-        }
     }
     TileItem(
         tile = tileMap[tileData.value]!!,
@@ -71,8 +68,8 @@ fun TileItem(
 @Composable
 private fun TileItem(
     tile: Tile,
-    contentPadding: Dp = 12.dp,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentPadding: Dp = 12.dp
 ) {
     val animatedColor by animateColorAsState(targetValue = tile.color)
     val animatedBorderColor by animateColorAsState(targetValue = tile.borderColor)

@@ -15,20 +15,23 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class GameUIState(
     val tileData: List<TileData> = emptyList(),
-    val bestScore : Int = 0,
+    val bestScore: Int = 0,
     val score: Int = 0,
     val isGameOver: Boolean = false,
     val undoEnabled: Boolean = false,
+    val showNewScoreDialog : Boolean = false,
 )
 
 private data class GameState(
     val gridData: GridMatrix = EMPTY_GRID,
     val score: Int = 0,
+    val showNewScoreDialog: Boolean = false,
 ) {
     fun toTileData(): List<TileData> {
         return gridData.flatMapIndexed { row, list ->
@@ -65,7 +68,8 @@ class HomeViewModel @Inject constructor(
             score = gameState.score,
             bestScore = bestScore,
             isGameOver = GameLogic.checkIfGameOver(gameState.gridData),
-            undoEnabled = lastState > 0
+            undoEnabled = lastState > 0,
+            showNewScoreDialog = gameState.showNewScoreDialog,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -73,15 +77,25 @@ class HomeViewModel @Inject constructor(
         initialValue = GameUIState()
     )
 
-    init { startNewGame() }
+    init {
+        startNewGame()
+    }
 
     fun startNewGame() {
         viewModelScope.launch {
-            gameStateRepo.deleteAllStates()
-            dataStoreRepo.updateBestScoreIfNecessary(_gameState.value.score)
+            gameStateRepo.deleteAllStates() // delete all game state from db
+            val showNewScoreDialog = dataStoreRepo.updateBestScoreIfNecessary(_gameState.value.score)
             val initialGrid = GameLogic.addRandomData(EMPTY_GRID, count = 2)
-            _gameState.value = GameState(gridData = initialGrid, score = 0)
+            _gameState.value = GameState(
+                gridData = initialGrid,
+                score = 0,
+                showNewScoreDialog = showNewScoreDialog,
+            )
         }
+    }
+
+    fun onNewScoreDialogDismiss() {
+        _gameState.update { it.copy(showNewScoreDialog = false) }
     }
 
     fun onUndo() {
