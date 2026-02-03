@@ -104,24 +104,9 @@ private fun Modifier.boardBackground(
 @Preview
 @Composable
 private fun BoardPreview() {
-
-    val tileData = listOf(
-        TileData(
-            id = "1",
-            value = 2,
-            row = 2,
-            col = 2,
-        ),
-        TileData(
-            id = "2",
-            value = 16,
-            row = 1,
-            col = 3,
-        ),
-    )
     Fruit2048Theme {
         Board(
-            tileData = tileData,
+            tileData = emptyList(),
             modifier = Modifier
         )
     }

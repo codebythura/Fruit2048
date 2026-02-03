@@ -4,9 +4,8 @@ import kotlin.random.Random
 
 
 const val GRID_SIZE = 4
-typealias GridMatrix = Array<Array<GridData?>>
-
-val EMPTY_GRID: GridMatrix = Array(GRID_SIZE) { Array(GRID_SIZE) { null } }
+typealias GridMatrix = List<List<GridData?>>
+val EMPTY_GRID: GridMatrix = List(GRID_SIZE) { List(GRID_SIZE) { null } }
 
 object GameLogic {
 
@@ -37,7 +36,7 @@ object GameLogic {
         if (emptyCells.isEmpty()) return gridData
 
         val actualCount = minOf(emptyCells.size,count)
-        val newGrid = gridData.map { it.copyOf() }.toTypedArray()
+        val newGrid = gridData.map { it.toMutableList() }.toMutableList()
 
         for (i in 0 until actualCount) {
             val cell = emptyCells[i]
@@ -62,9 +61,9 @@ object GameLogic {
     }
 
     fun swipeToRight(gridData: GridMatrix): Pair<GridMatrix,Int> {
-        val reversed = gridData.map { row -> row.reversedArray() }.toTypedArray()
+        val reversed = gridData.map { row -> row.reversed() }
         val (swipedToLeft,score) = swipeToLeft(reversed)
-        val swipedToRight = swipedToLeft.map { row -> row.reversedArray() }.toTypedArray()
+        val swipedToRight = swipedToLeft.map { row -> row.reversed() }
         return Pair(swipedToRight,score)
     }
 
@@ -74,35 +73,35 @@ object GameLogic {
             val (merged,score) = mergeToLeft(row)
             totalScore += score
             padToGridSize(merged)
-        }.toTypedArray()
+        }
         return Pair(swipedToLeft,totalScore)
     }
 
     private fun rotate90AntiClockwise(gridData: GridMatrix): GridMatrix {
-        return Array(GRID_SIZE) { row ->
-            Array(GRID_SIZE) { col ->
+        return List(GRID_SIZE) { row ->
+            List(GRID_SIZE) { col ->
                 gridData[col][GRID_SIZE - 1 - row]
             }
         }
     }
 
     private fun rotate90Clockwise(gridData: GridMatrix): GridMatrix {
-        return Array(GRID_SIZE) { row ->
-            Array(GRID_SIZE) { col ->
+        return List(GRID_SIZE) { row ->
+            List(GRID_SIZE) { col ->
                 gridData[GRID_SIZE - 1 - col][row]
             }
         }
     }
 
-    private fun padToGridSize(array: Array<GridData?>): Array<GridData?> {
+    private fun padToGridSize(array: List<GridData?>): List<GridData?> {
         val missing = (GRID_SIZE - array.size).coerceAtLeast(0)
-        return array + Array(missing) { null }
+        return array + List(missing) { null }
     }
 
-    private fun mergeToLeft(array: Array<GridData?>): Pair<Array<GridData?>,Int> {
+    private fun mergeToLeft(array: List<GridData?>): Pair<List<GridData?>,Int> {
         val notNulls = array.filterNotNull()
         val merged = mutableListOf<GridData>()
-        var mergedScore : Int = 0
+        var mergedScore = 0
         var i = 0
         while (i < notNulls.size) {
             if (i + 1 < notNulls.size && notNulls[i].value == notNulls[i + 1].value) {
@@ -115,7 +114,7 @@ object GameLogic {
                 i++
             }
         }
-        return Pair(merged.toTypedArray(),mergedScore)
+        return Pair(merged,mergedScore)
     }
 
 }

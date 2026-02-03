@@ -1,30 +1,33 @@
 package com.codebythura.fruit2048.ui.home.components
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.codebythura.fruit2048.R
 
+private val buttonHeight = 50.dp
 
 @Composable
 fun ActionsRow(
+    undoEnabled: Boolean = true,
+    onUndo: () -> Unit,
+    startNewGameEnabled: Boolean = true,
     onStartNewGame: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -32,76 +35,55 @@ fun ActionsRow(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally)
     ) {
-        NewGameButton2(
+        NewGameButton(
+            enabled = startNewGameEnabled,
             onClick = onStartNewGame,
             modifier = Modifier.weight(1f)
         )
-        UndoGameButton(modifier = Modifier)
+        UndoGameButton(
+            enabled = undoEnabled,
+            onClick = onUndo,
+            modifier = Modifier
+        )
     }
 }
 
 @Composable
-fun UndoGameButton(modifier: Modifier = Modifier) {
-    Surface(
-        onClick = {},
-        color = MaterialTheme.colorScheme.primary,
-        modifier = modifier.size(48.dp),
-        shape = RoundedCornerShape(12.dp),
-        content = {
-            Image(
-                painter = painterResource(R.drawable.undo_dark),
-                contentDescription = "Undo",
-                modifier = Modifier.padding(8.dp)
-            )
-        }
-    )
-}
-
-@Composable
-private fun NewGameButton(modifier: Modifier = Modifier) {
-    Surface(
-        onClick = {},
-        modifier = modifier.size(48.dp),
-        shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(width = 1.dp, color = Color.Gray),
-        content = {
-            Row(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(12.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.restart_light),
-                    contentDescription = "restart",
-                )
-                Text(
-                    text = "New Game",
-                    color = Color.Black,
-                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
-                )
-            }
-        }
-    )
-}
-
-@Composable
-fun NewGameButton2(
+fun UndoGameButton(
+    enabled: Boolean = true,
     onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    Button(
+    ActionButton(
+        enabled = enabled,
         onClick = onClick,
-        shape = RoundedCornerShape(12.dp),
-        modifier = modifier.height(48.dp)
+        modifier = modifier.size(buttonHeight),
+        contentPadding = PaddingValues(0.dp)
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.undo_light),
+            contentDescription = "Undo",
+        )
+    }
+}
+
+@Composable
+fun NewGameButton(
+    enabled: Boolean = true,
+    onClick: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
+    ActionButton(
+        enabled = enabled,
+        onClick = onClick,
+        modifier = modifier.height(48.dp),
     ) {
         Row(
             modifier = modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Image(
+            Icon(
                 painter = painterResource(R.drawable.restart_dark),
                 contentDescription = "restart",
             )
@@ -112,5 +94,26 @@ fun NewGameButton2(
             )
         }
     }
+}
 
+@Composable
+private fun ActionButton(
+    onClick: () -> Unit,
+    enabled: Boolean = true,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+    content: @Composable RowScope.() -> Unit,
+) {
+    Button(
+        onClick = onClick,
+        enabled = enabled,
+        shape = RoundedCornerShape(12.dp),
+        modifier = modifier,
+        contentPadding = contentPadding,
+        colors = ButtonDefaults.buttonColors(
+            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+            disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.4f)
+        ),
+        content = content,
+    )
 }

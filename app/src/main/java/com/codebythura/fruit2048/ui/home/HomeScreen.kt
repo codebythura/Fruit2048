@@ -5,15 +5,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.codebythura.fruit2048.data.Direction
 import com.codebythura.fruit2048.data.TileData
 import com.codebythura.fruit2048.ui.home.components.ActionsRow
@@ -23,11 +22,12 @@ import com.codebythura.fruit2048.ui.home.components.GameOverDialog
 import com.codebythura.fruit2048.ui.home.components.ScoreRow
 import kotlin.math.abs
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
-    val viewModel: HomeViewModel = viewModel()
-    val state by viewModel.gameUIState.collectAsStateWithLifecycle()
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = hiltViewModel()
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     if (state.isGameOver) {
         GameOverDialog(
             score = state.score,
@@ -38,9 +38,12 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         modifier = modifier,
         content = { innerPadding ->
             HomeContent(
+                bestScore = state.bestScore,
                 score = state.score,
                 tileData = state.tileData,
                 onStartNewGame = viewModel::startNewGame,
+                onUndo = viewModel::onUndo,
+                undoEnabled = state.undoEnabled,
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize()
@@ -53,9 +56,12 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 
 @Composable
 fun HomeContent(
+    bestScore : Int,
     score: Int,
     tileData: List<TileData>,
     onStartNewGame: () -> Unit,
+    onUndo: () -> Unit,
+    undoEnabled : Boolean,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -63,8 +69,12 @@ fun HomeContent(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         AppTitle()
-        ScoreRow(score = score)
-        ActionsRow(onStartNewGame = onStartNewGame)
+        ScoreRow(bestScore = bestScore,score = score)
+        ActionsRow(
+            undoEnabled = undoEnabled,
+            onUndo = onUndo,
+            onStartNewGame = onStartNewGame
+        )
         Board(tileData = tileData)
     }
 }

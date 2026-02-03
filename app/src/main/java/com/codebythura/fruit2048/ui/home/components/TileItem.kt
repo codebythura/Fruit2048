@@ -36,23 +36,28 @@ fun TileItem(
     modifier: Modifier = Modifier
 ) {
     val scale = remember { Animatable(0f) }
-    LaunchedEffect(Unit) {
-        delay(defaultDurationMillis.toLong())
-        scale.snapTo(0.8f)
-        scale.animateTo(
-            targetValue = 1.12f,
-            animationSpec = spring(
-                dampingRatio = Spring.DampingRatioNoBouncy,
-                stiffness = Spring.StiffnessMedium,
-            ),
-        )
-        scale.animateTo(
-            targetValue = 1f,
-            animationSpec = spring(
-                dampingRatio = Spring.DampingRatioMediumBouncy,
-                stiffness = Spring.StiffnessMedium,
-            ),
-        )
+    LaunchedEffect(tileData.id) {
+        if(tileData.shouldAnimated) {
+            delay(defaultDurationMillis.toLong())
+            scale.snapTo(0.8f)
+            scale.animateTo(
+                targetValue = 1.12f,
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioNoBouncy,
+                    stiffness = Spring.StiffnessMedium,
+                ),
+            )
+            scale.animateTo(
+                targetValue = 1f,
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessMedium,
+                ),
+            )
+        }
+        else {
+            scale.snapTo(1f)
+        }
     }
     TileItem(
         tile = tileMap[tileData.value]!!,

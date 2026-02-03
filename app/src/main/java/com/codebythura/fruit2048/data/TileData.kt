@@ -6,4 +6,5 @@ data class TileData(
     var value: Int,
     var row: Int,
     var col: Int,
+    val shouldAnimated : Boolean,
 )

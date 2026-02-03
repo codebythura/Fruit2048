@@ -1,6 +1,5 @@
 package com.codebythura.fruit2048.ui.home.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,13 +12,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 
 @Composable
 fun ScoreRow(
+    bestScore : Int,
     score: Int,
     modifier: Modifier = Modifier
 ) {
@@ -29,7 +28,7 @@ fun ScoreRow(
     ) {
         ScoreContainer(
             title = "Best Score",
-            score = 2045,
+            score = bestScore,
             modifier = Modifier.weight(1f),
         )
         ScoreContainer(
