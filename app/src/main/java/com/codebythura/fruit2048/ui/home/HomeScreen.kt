@@ -5,10 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,13 +19,13 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codebythura.fruit2048.data.Direction
 import com.codebythura.fruit2048.data.TileData
+import com.codebythura.fruit2048.data.defaultDurationMillis
 import com.codebythura.fruit2048.ui.home.components.ActionsRow
 import com.codebythura.fruit2048.ui.home.components.AppTitle
 import com.codebythura.fruit2048.ui.home.components.Board
 import com.codebythura.fruit2048.ui.home.components.GameOverDialog
 import com.codebythura.fruit2048.ui.home.components.NewBestScoreDialog
 import com.codebythura.fruit2048.ui.home.components.ScoreRow
-import com.codebythura.fruit2048.ui.home.components.defaultDurationMillis
 import kotlinx.coroutines.delay
 import kotlin.math.abs
 
@@ -54,10 +50,11 @@ fun HomeScreen(
             onGameRestart = viewModel::startNewGame
         )
     }
-    if(state.showNewScoreDialog) {
-        NewBestScoreDialog(bestScore = state.bestScore) {
-            viewModel.onNewScoreDialogDismiss()
-        }
+    if (state.showNewScoreDialog) {
+        NewBestScoreDialog(
+            bestScore = state.bestScore,
+            onDismiss = viewModel::onNewScoreDialogDismiss
+        )
     }
     Scaffold(
         modifier = modifier,

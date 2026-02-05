@@ -24,10 +24,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.graphics.graphicsLayer
 import com.codebythura.fruit2048.data.Tile
 import com.codebythura.fruit2048.data.TileData
-import com.codebythura.fruit2048.data.tileMap
+import com.codebythura.fruit2048.data.darkTileMap
+import com.codebythura.fruit2048.data.defaultCornerRadius
+import com.codebythura.fruit2048.data.defaultDurationMillis
+import com.codebythura.fruit2048.data.lightTileMap
 import kotlinx.coroutines.delay
 
 @Composable
@@ -56,6 +60,7 @@ fun TileItem(
             )
         }
     }
+    val tileMap = if(isSystemInDarkTheme()) darkTileMap else lightTileMap
     TileItem(
         tile = tileMap[tileData.value]!!,
         modifier = modifier.graphicsLayer {

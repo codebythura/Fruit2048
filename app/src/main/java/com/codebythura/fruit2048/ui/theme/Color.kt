@@ -2,10 +2,10 @@ package com.codebythura.fruit2048.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+val darkPrimaryColor = Color(0xFF6DB3F5)
+val darkPrimaryContainer = Color(0xFFABA7A7)
+val darkSecondaryContainer = Color(0xFF817C7C)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val lightPrimaryColor = Color(0xFF176FE7)
+val lightPrimaryContainer = Color(0xFFE8E3E3)
+val lightSecondaryContainer = Color(0xFFd6d3d1)

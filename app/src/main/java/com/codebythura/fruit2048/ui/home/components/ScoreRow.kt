@@ -47,7 +47,7 @@ private fun ScoreContainer(
 ) {
     Surface(
         modifier = modifier,
-        color = defaultTileBgColor,
+        color = MaterialTheme.colorScheme.secondaryContainer,
         shape = RoundedCornerShape(12.dp),
     ) {
         Column(

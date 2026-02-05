@@ -108,7 +108,7 @@ class HomeViewModel @Inject constructor(
 
     fun onSwipe(direction: Direction) {
         viewModelScope.launch {
-            gameStateRepo.saveState(_gameState.value.toEntity())
+            gameStateRepo.saveState(_gameState.value.toEntity()) // save the current state first
             val (swipedGrid, newScore) = when (direction) {
                 Direction.LEFT -> GameLogic.swipeToLeft(_gameState.value.gridData)
                 Direction.RIGHT -> GameLogic.swipeToRight(_gameState.value.gridData)

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -18,24 +19,20 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.codebythura.fruit2048.data.TileData
+import com.codebythura.fruit2048.data.defaultCornerRadius
+import com.codebythura.fruit2048.data.defaultDurationMillis
+import com.codebythura.fruit2048.data.defaultPaddingDp
 import com.codebythura.fruit2048.ui.theme.Fruit2048Theme
 
-
-val defaultPaddingDp = 8.dp
-val defaultBoardBgColor = Color(0xFFE8E3E3)
-val defaultTileBgColor = Color(0xFFd6d3d1)
-val defaultCornerRadius = 12.dp
-const val defaultDurationMillis = 200
 
 @Composable
 fun Board(
     tileData: List<TileData> = emptyList(),
     padding: Dp = defaultPaddingDp,
     cornerRadius: Dp = defaultCornerRadius,
-    backgroundColor: Color = defaultBoardBgColor,
-    tileBgColor: Color = defaultTileBgColor,
+    backgroundColor: Color = MaterialTheme.colorScheme.primaryContainer,
+    tileBgColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     modifier: Modifier = Modifier,
 ) {
     BoxWithConstraints(

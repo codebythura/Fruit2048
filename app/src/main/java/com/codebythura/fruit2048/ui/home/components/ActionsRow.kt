@@ -111,8 +111,8 @@ private fun ActionButton(
         modifier = modifier,
         contentPadding = contentPadding,
         colors = ButtonDefaults.buttonColors(
-            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
-            disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.4f)
+            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+            disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f)
         ),
         content = content,
     )
