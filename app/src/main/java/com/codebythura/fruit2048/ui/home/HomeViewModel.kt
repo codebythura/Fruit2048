@@ -2,8 +2,8 @@ package com.codebythura.fruit2048.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.codebythura.fruit2048.GameStateRepository
-import com.codebythura.fruit2048.DataStoreRepository
+import com.codebythura.fruit2048.repository.GameStateRepository
+import com.codebythura.fruit2048.repository.DataStoreRepository
 import com.codebythura.fruit2048.data.Direction
 import com.codebythura.fruit2048.data.EMPTY_GRID
 import com.codebythura.fruit2048.data.GameLogic

@@ -61,7 +61,7 @@ fun UndoGameButton(
         contentPadding = PaddingValues(0.dp)
     ) {
         Icon(
-            painter = painterResource(R.drawable.undo_light),
+            painter = painterResource(R.drawable.undo),
             contentDescription = "Undo",
         )
     }
@@ -84,7 +84,7 @@ fun NewGameButton(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
-                painter = painterResource(R.drawable.restart_dark),
+                painter = painterResource(R.drawable.restart),
                 contentDescription = "restart",
             )
             Text(

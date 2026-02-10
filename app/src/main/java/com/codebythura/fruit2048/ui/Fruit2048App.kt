@@ -1,4 +1,4 @@
-package com.codebythura.fruit2048
+package com.codebythura.fruit2048.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

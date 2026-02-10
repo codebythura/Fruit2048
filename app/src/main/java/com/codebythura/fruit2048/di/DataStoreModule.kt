@@ -3,7 +3,7 @@ package com.codebythura.fruit2048.di
 import android.content.Context
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
-import com.codebythura.fruit2048.AppDataSerializer
+import com.codebythura.fruit2048.data.AppDataSerializer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

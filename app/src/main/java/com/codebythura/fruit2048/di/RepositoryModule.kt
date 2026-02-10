@@ -6,10 +6,10 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import com.codebythura.fruit2048.DataStoreRepository
-import com.codebythura.fruit2048.DataStoreRepositoryImpl
-import com.codebythura.fruit2048.GameStateRepository
-import com.codebythura.fruit2048.GameStateRepositoryImpl
+import com.codebythura.fruit2048.repository.DataStoreRepository
+import com.codebythura.fruit2048.repository.DataStoreRepositoryImpl
+import com.codebythura.fruit2048.repository.GameStateRepository
+import com.codebythura.fruit2048.repository.GameStateRepositoryImpl
 
 @Module
 @InstallIn(SingletonComponent::class)

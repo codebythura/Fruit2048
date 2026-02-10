@@ -70,7 +70,7 @@ private fun TryAgainButton(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Image(
-                painter = painterResource(R.drawable.restart_dark),
+                painter = painterResource(R.drawable.restart),
                 contentDescription = "restart",
             )
             Text(

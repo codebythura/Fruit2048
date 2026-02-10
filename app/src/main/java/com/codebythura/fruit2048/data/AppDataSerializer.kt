@@ -1,7 +1,8 @@
-package com.codebythura.fruit2048
+package com.codebythura.fruit2048.data
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
+import com.codebythura.fruit2048.AppData
 import com.google.protobuf.InvalidProtocolBufferException
 import java.io.InputStream
 import java.io.OutputStream

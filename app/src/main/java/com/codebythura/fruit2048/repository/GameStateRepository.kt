@@ -1,4 +1,4 @@
-package com.codebythura.fruit2048
+package com.codebythura.fruit2048.repository
 
 import androidx.room.withTransaction
 import com.codebythura.fruit2048.database.AppDatabase
