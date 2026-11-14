@@ -1,4 +1,4 @@
-package com.codebythura.fruit2048.ui.home.components
+package com.codebythura.fruit2048.ui.game.dialog
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
+import com.codebythura.fruit2048.data.AppConsts
 
 
 @Composable
@@ -27,45 +27,41 @@ fun RestartConfirmDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    Dialog(onDismissRequest = onDismiss) {
-        Card(
+
+    AppDialog(onDismissRequest = onDismiss) {
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight(),
-            shape = RoundedCornerShape(12.dp),
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+            Text(
+                text = "Confirm",
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleLarge,
+            )
+            Text(
+                text = "Are you sure to restart the game?",
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(top = 12.dp, bottom = 18.dp)
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(
-                    text = "Confirm",
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                CancelButton(
+                    onClick = onDismiss,
+                    modifier = Modifier.weight(1f)
                 )
-                Text(
-                    text = "Are you sure to restart the game?",
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(top = 12.dp, bottom = 18.dp)
+                RestartButton(
+                    onClick = onConfirm,
+                    modifier = Modifier.weight(1f)
                 )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    RestartButton(
-                        onClick = onConfirm,
-                        modifier = Modifier.weight(1f)
-                    )
-                    CancelButton(
-                        onClick = onDismiss,
-                        modifier = Modifier.weight(1f)
-                    )
-                }
             }
         }
     }
+
 }
 
 
@@ -76,7 +72,7 @@ private fun RestartButton(
 ) {
     Button(
         onClick = onClick,
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(AppConsts.defaultCornerRadius),
         modifier = modifier,
     ) {
         Text("Restart")
@@ -91,7 +87,7 @@ private fun CancelButton(
     OutlinedButton(
         onClick = onClick,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(AppConsts.defaultCornerRadius),
         modifier = modifier,
     ) {
         Text(text = "Cancel")

@@ -1,4 +1,4 @@
-package com.codebythura.fruit2048.ui.home.components
+package com.codebythura.fruit2048.ui.game.components
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column

@@ -1,4 +1,4 @@
-package com.codebythura.fruit2048.ui.home
+package com.codebythura.fruit2048.ui.game
 
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -10,35 +10,38 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.codebythura.fruit2048.data.AppConsts
 import com.codebythura.fruit2048.data.Direction
 import com.codebythura.fruit2048.data.TileData
-import com.codebythura.fruit2048.data.defaultDurationMillis
-import com.codebythura.fruit2048.ui.home.components.ActionsRow
-import com.codebythura.fruit2048.ui.home.components.AppTitle
-import com.codebythura.fruit2048.ui.home.components.Board
-import com.codebythura.fruit2048.ui.home.components.GameOverDialog
-import com.codebythura.fruit2048.ui.home.components.NewBestScoreDialog
-import com.codebythura.fruit2048.ui.home.components.ScoreRow
+import com.codebythura.fruit2048.ui.game.components.ActionsRow
+import com.codebythura.fruit2048.ui.game.components.AppTitle
+import com.codebythura.fruit2048.ui.game.components.Board
+import com.codebythura.fruit2048.ui.game.dialog.GameOverDialog
+import com.codebythura.fruit2048.ui.game.dialog.NewBestScoreDialog
+import com.codebythura.fruit2048.ui.game.components.ScoreRow
 import kotlinx.coroutines.delay
 import kotlin.math.abs
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
-fun HomeScreen(
+fun GameScreen(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: GameViewModel = hiltViewModel()
 ) {
+
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    var showGameOverDialog by remember { mutableStateOf(false) }
+    var showGameOverDialog by rememberSaveable { mutableStateOf(false) }
+
     LaunchedEffect(state.isGameOver) {
         if (state.isGameOver) {
-            delay(defaultDurationMillis.toLong()) // wait for the last tile animation
+            delay(AppConsts.defaultDuration.milliseconds) // wait for the last tile animation
             showGameOverDialog = true
         } else {
             showGameOverDialog = false
@@ -67,13 +70,14 @@ fun HomeScreen(
                 onUndo = viewModel::onUndo,
                 undoEnabled = state.undoEnabled,
                 modifier = Modifier
-                    .padding(innerPadding)
                     .fillMaxSize()
+                    .padding(innerPadding)
                     .onSwipe(onSwipe = viewModel::onSwipe)
                     .padding(start = 24.dp, end = 24.dp, top = 64.dp)
             )
         }
     )
+
 }
 
 @Composable
@@ -97,7 +101,7 @@ fun HomeContent(
             onUndo = onUndo,
             onStartNewGame = onStartNewGame
         )
-        Board(tileData = tileData)
+        Board(tileDataList = tileData)
     }
 }
 

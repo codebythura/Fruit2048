@@ -25,7 +25,7 @@ class GridConverter {
         val grid : List<MutableList<GridData?>> = MutableList(GRID_SIZE) { MutableList(GRID_SIZE) { null } }
         for (data in list) {
             val (value, row, col) = data.removePrefix("(").removeSuffix(")").split(",")
-            grid[row.toInt()][col.toInt()] = GridData(value = value.toInt(), shouldAnimated = false)
+            grid[row.toInt()][col.toInt()] = GridData(value = value.toInt(), shouldAnimate = false)
         }
         return grid
     }

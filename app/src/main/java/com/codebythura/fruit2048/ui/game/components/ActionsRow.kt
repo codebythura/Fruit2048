@@ -1,4 +1,4 @@
-package com.codebythura.fruit2048.ui.home.components
+package com.codebythura.fruit2048.ui.game.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.codebythura.fruit2048.R
+import com.codebythura.fruit2048.data.AppConsts
 
 private val buttonHeight = 50.dp
 
@@ -51,7 +52,7 @@ fun ActionsRow(
 @Composable
 fun UndoGameButton(
     enabled: Boolean = true,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     ActionButton(
@@ -70,13 +71,13 @@ fun UndoGameButton(
 @Composable
 fun NewGameButton(
     enabled: Boolean = true,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     ActionButton(
         enabled = enabled,
         onClick = onClick,
-        modifier = modifier.height(48.dp),
+        modifier = modifier,
     ) {
         Row(
             modifier = modifier.fillMaxWidth(),
@@ -107,8 +108,8 @@ private fun ActionButton(
     Button(
         onClick = onClick,
         enabled = enabled,
-        shape = RoundedCornerShape(12.dp),
-        modifier = modifier,
+        shape = RoundedCornerShape(AppConsts.defaultCornerRadius),
+        modifier = modifier.height(buttonHeight),
         contentPadding = contentPadding,
         colors = ButtonDefaults.buttonColors(
             disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),

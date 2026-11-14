@@ -1,15 +1,15 @@
-package com.codebythura.fruit2048.ui.home
+package com.codebythura.fruit2048.ui.game
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.codebythura.fruit2048.repository.GameStateRepository
-import com.codebythura.fruit2048.repository.DataStoreRepository
 import com.codebythura.fruit2048.data.Direction
 import com.codebythura.fruit2048.data.EMPTY_GRID
 import com.codebythura.fruit2048.data.GameLogic
-import com.codebythura.fruit2048.data.GridMatrix
 import com.codebythura.fruit2048.data.TileData
-import com.codebythura.fruit2048.database.GameStateEntity
+import com.codebythura.fruit2048.database.toState
+import com.codebythura.fruit2048.repository.DataStoreRepository
+import com.codebythura.fruit2048.repository.GameStateRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@Immutable
 data class GameUIState(
     val tileData: List<TileData> = emptyList(),
     val bestScore: Int = 0,
@@ -28,31 +29,8 @@ data class GameUIState(
     val showNewScoreDialog : Boolean = false,
 )
 
-private data class GameState(
-    val gridData: GridMatrix = EMPTY_GRID,
-    val score: Int = 0,
-    val showNewScoreDialog: Boolean = false,
-) {
-    fun toTileData(): List<TileData> {
-        return gridData.flatMapIndexed { row, list ->
-            list.mapIndexedNotNull { col, data -> data?.intoTile(row, col) }
-        }
-    }
-}
-
-private fun GameStateEntity.toState() = GameState(
-    gridData = state,
-    score = score,
-)
-
-private fun GameState.toEntity() = GameStateEntity(
-    state = gridData,
-    score = score,
-)
-
-
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class GameViewModel @Inject constructor(
     private val gameStateRepo: GameStateRepository,
     private val dataStoreRepo: DataStoreRepository,
 ) : ViewModel() {
