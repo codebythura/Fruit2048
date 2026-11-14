@@ -10,14 +10,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 
-private val lightColors = listOf(
+private val _lightColors = listOf(
     Color(0xFF08B928),
     Color(0xFFBDB00E),
     Color(0xFFE86916),
     Color(0xFF6E14EA)
 )
 
-private val darkColors = listOf(
+private val _darkColors = listOf(
     Color(0xFF12C52E),
     Color(0xFFDACC39),
     Color(0xFFE17B37),
@@ -26,7 +26,7 @@ private val darkColors = listOf(
 
 @Composable
 fun AppTitle(modifier: Modifier = Modifier) {
-    val colors = if(isSystemInDarkTheme()) darkColors else lightColors
+    val colors = if(isSystemInDarkTheme()) _darkColors else _lightColors
     Column(modifier = modifier) {
         Text(
             text = "2048",

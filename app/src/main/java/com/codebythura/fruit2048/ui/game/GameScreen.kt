@@ -6,12 +6,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
@@ -26,6 +28,7 @@ import com.codebythura.fruit2048.ui.game.components.Board
 import com.codebythura.fruit2048.ui.game.dialog.GameOverDialog
 import com.codebythura.fruit2048.ui.game.dialog.NewBestScoreDialog
 import com.codebythura.fruit2048.ui.game.components.ScoreRow
+import com.codebythura.fruit2048.ui.game.dialog.RestartConfirmDialog
 import kotlinx.coroutines.delay
 import kotlin.math.abs
 import kotlin.time.Duration.Companion.milliseconds
@@ -33,32 +36,18 @@ import kotlin.time.Duration.Companion.milliseconds
 @Composable
 fun GameScreen(
     modifier: Modifier = Modifier,
-    viewModel: GameViewModel = hiltViewModel()
+    viewModel: GameViewModel = hiltViewModel(),
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    var showGameOverDialog by rememberSaveable { mutableStateOf(false) }
 
-    LaunchedEffect(state.isGameOver) {
-        if (state.isGameOver) {
-            delay(AppConsts.defaultDuration.milliseconds) // wait for the last tile animation
-            showGameOverDialog = true
-        } else {
-            showGameOverDialog = false
-        }
-    }
-    if (showGameOverDialog) {
-        GameOverDialog(
-            score = state.score,
-            onGameRestart = viewModel::startNewGame
-        )
-    }
-    if (state.showNewScoreDialog) {
-        NewBestScoreDialog(
-            bestScore = state.bestScore,
-            onDismiss = viewModel::onNewScoreDialogDismiss
-        )
-    }
+    GameDialogEffect(
+        state = state,
+        startNewGame = viewModel::startNewGame,
+        onRestartGameDialogDismiss = viewModel::onRestartGameDialogDismiss,
+        onNewScoreDialogDismiss = viewModel::onNewScoreDialogDismiss,
+    )
+
     Scaffold(
         modifier = modifier,
         content = { innerPadding ->
@@ -66,7 +55,7 @@ fun GameScreen(
                 bestScore = state.bestScore,
                 score = state.score,
                 tileData = state.tileData,
-                onStartNewGame = viewModel::startNewGame,
+                onStartNewGame = viewModel::onRestartGame,
                 onUndo = viewModel::onUndo,
                 undoEnabled = state.undoEnabled,
                 modifier = Modifier
@@ -81,14 +70,51 @@ fun GameScreen(
 }
 
 @Composable
-fun HomeContent(
+private fun GameDialogEffect(
+    state: GameUIState,
+    startNewGame : () -> Unit,
+    onNewScoreDialogDismiss : () -> Unit,
+    onRestartGameDialogDismiss : () -> Unit,
+) {
+
+    var showGameOverDialog by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(state.isGameOver) {
+        if (state.isGameOver) {
+            delay(AppConsts.defaultDuration.milliseconds) // wait for the last tile animation
+            showGameOverDialog = true
+        } else {
+            showGameOverDialog = false
+        }
+    }
+    if (showGameOverDialog) {
+        GameOverDialog(
+            score = state.score,
+            onGameRestart = startNewGame
+        )
+    }
+    if (state.showNewScoreDialog) {
+        NewBestScoreDialog(
+            bestScore = state.bestScore,
+            onDismiss = onNewScoreDialogDismiss
+        )
+    }
+    if (state.showRestartConfirmDialog) {
+        RestartConfirmDialog(
+            onDismiss = onRestartGameDialogDismiss,
+            onConfirm = startNewGame
+        )
+    }
+}
+
+@Composable
+private fun HomeContent(
     bestScore: Int,
     score: Int,
     tileData: List<TileData>,
     onStartNewGame: () -> Unit,
     onUndo: () -> Unit,
     undoEnabled: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier,
@@ -108,7 +134,7 @@ fun HomeContent(
 
 private fun Modifier.onSwipe(
     threshold: Float = 50f,
-    onSwipe: (Direction) -> Unit
+    onSwipe: (Direction) -> Unit,
 ): Modifier = this.pointerInput(Unit) {
     var dragAmountX = 0f
     var dragAmountY = 0f

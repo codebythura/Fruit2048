@@ -9,6 +9,7 @@ data class GameState(
     val gridData: GridMatrix = EMPTY_GRID,
     val score: Int = 0,
     val showNewScoreDialog: Boolean = false,
+    val showRestartConfirmDialog : Boolean = false,
 ) {
     fun toTileData(): List<TileData> {
         return gridData.flatMapIndexed { row, list ->

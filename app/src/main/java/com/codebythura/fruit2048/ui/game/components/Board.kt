@@ -1,5 +1,3 @@
-@file:JvmName("BoardKt")
-
 package com.codebythura.fruit2048.ui.game.components
 
 import androidx.compose.animation.animateColorAsState
@@ -9,7 +7,6 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -45,10 +42,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.codebythura.fruit2048.data.AppConsts
-import com.codebythura.fruit2048.data.Tile
 import com.codebythura.fruit2048.data.TileData
-import com.codebythura.fruit2048.data.darkTileMap
-import com.codebythura.fruit2048.data.lightTileMap
+import com.codebythura.fruit2048.data.getTile
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -75,7 +70,6 @@ fun Board(
         val boardSizeDp = minOf(maxWidth, maxHeight)
         val tileSizeDp = (boardSizeDp - padding * 5) / 4
         fun getOffset(index: Int): Dp = padding * (index + 1) + (tileSizeDp * index)
-        val tileMap = if (isSystemInDarkTheme()) darkTileMap else lightTileMap
 
         for (tileData in tileDataList) {
             key(tileData.id) {
@@ -94,9 +88,7 @@ fun Board(
                     )
                 )
                 TileItem(
-                    id = tileData.id,
-                    tile = tileMap[tileData.value]!!,
-                    shouldAnimate = tileData.shouldAnimate,
+                    tileData = tileData,
                     cornerRadius = cornerRadius,
                     modifier = Modifier
                         .size(tileSizeDp)
@@ -115,21 +107,19 @@ fun Board(
 
 @Composable
 private fun TileItem(
-    id: String,
-    tile: Tile,
-    shouldAnimate: Boolean,
+    tileData : TileData,
     cornerRadius: Dp,
     modifier: Modifier = Modifier,
     contentPadding: Dp = 12.dp,
 ) {
 
-    val shape = RoundedCornerShape(cornerRadius)
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
+    val shape = RoundedCornerShape(cornerRadius)
 
-    val scale = remember { Animatable(if (shouldAnimate) 0f else 1f) }
-    LaunchedEffect(id) {
-        if (shouldAnimate) {
+    val scale = remember { Animatable(if (tileData.shouldAnimate) 0f else 1f) }
+    LaunchedEffect(tileData.id) {
+        if (tileData.shouldAnimate) {
             delay(AppConsts.defaultDuration.milliseconds)
             scale.snapTo(0.8f)
             scale.animateTo(
@@ -149,6 +139,7 @@ private fun TileItem(
         }
     }
 
+    val tile = getTile(tileData.value)
     val animatedColor by animateColorAsState(targetValue = tile.color)
     val animatedBorderColor by animateColorAsState(targetValue = tile.borderColor)
 
@@ -157,10 +148,10 @@ private fun TileItem(
             modifier
                 .aspectRatio(1f)
                 .graphicsLayer {
-                    this.scaleX = scale.value
-                    this.scaleY = scale.value
                     this.shape = shape
                     this.clip = true
+                    this.scaleX = scale.value
+                    this.scaleY = scale.value
                 }
                 .drawBehind {
                     drawRect(color = animatedColor)

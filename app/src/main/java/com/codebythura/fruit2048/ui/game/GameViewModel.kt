@@ -3,6 +3,7 @@ package com.codebythura.fruit2048.ui.game
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.codebythura.fruit2048.data.Direction
 import com.codebythura.fruit2048.data.EMPTY_GRID
 import com.codebythura.fruit2048.data.GameLogic
@@ -27,6 +28,7 @@ data class GameUIState(
     val isGameOver: Boolean = false,
     val undoEnabled: Boolean = false,
     val showNewScoreDialog : Boolean = false,
+    val showRestartConfirmDialog : Boolean = false,
 )
 
 @HiltViewModel
@@ -48,6 +50,7 @@ class GameViewModel @Inject constructor(
             isGameOver = GameLogic.checkIfGameOver(gameState.gridData),
             undoEnabled = lastState > 0,
             showNewScoreDialog = gameState.showNewScoreDialog,
+            showRestartConfirmDialog = gameState.showRestartConfirmDialog
         )
     }.stateIn(
         scope = viewModelScope,
@@ -57,6 +60,14 @@ class GameViewModel @Inject constructor(
 
     init {
         startNewGame()
+    }
+
+    fun onRestartGame() {
+        if(uiState.value.undoEnabled) {
+            _gameState.update { it.copy(showRestartConfirmDialog = true) }
+        } else {
+            startNewGame()
+        }
     }
 
     fun startNewGame() {
@@ -70,6 +81,10 @@ class GameViewModel @Inject constructor(
                 showNewScoreDialog = showNewScoreDialog,
             )
         }
+    }
+
+    fun onRestartGameDialogDismiss() {
+        _gameState.update { it.copy(showRestartConfirmDialog = false) }
     }
 
     fun onNewScoreDialogDismiss() {
