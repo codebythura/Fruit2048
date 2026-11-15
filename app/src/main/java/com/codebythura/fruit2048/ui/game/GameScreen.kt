@@ -19,8 +19,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codebythura.fruit2048.data.AppConsts
 import com.codebythura.fruit2048.data.Direction
-import com.codebythura.fruit2048.data.GameDialogState
-import com.codebythura.fruit2048.data.GameViewModel2
 import com.codebythura.fruit2048.data.TileData
 import com.codebythura.fruit2048.ui.game.components.ActionsRow
 import com.codebythura.fruit2048.ui.game.components.AppTitle
@@ -29,7 +27,6 @@ import com.codebythura.fruit2048.ui.game.dialog.GameOverDialog
 import com.codebythura.fruit2048.ui.game.dialog.NewBestScoreDialog
 import com.codebythura.fruit2048.ui.game.components.ScoreRow
 import com.codebythura.fruit2048.ui.game.dialog.RestartConfirmDialog
-import com.codebythura.fruit2048.ui.game.dialog.ResumeGameDialog
 import kotlinx.coroutines.delay
 import kotlin.math.abs
 import kotlin.time.Duration.Companion.milliseconds
@@ -37,7 +34,7 @@ import kotlin.time.Duration.Companion.milliseconds
 @Composable
 fun GameScreen(
     modifier: Modifier = Modifier,
-    viewModel: GameViewModel2 = hiltViewModel(),
+    viewModel: GameViewModel = hiltViewModel(),
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()

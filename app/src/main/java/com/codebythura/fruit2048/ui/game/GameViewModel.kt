@@ -4,15 +4,9 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codebythura.fruit2048.data.Direction
-import com.codebythura.fruit2048.data.EMPTY_GRID
 import com.codebythura.fruit2048.data.GameEngine
-import com.codebythura.fruit2048.data.GameLogic
 import com.codebythura.fruit2048.data.TileData
-import com.codebythura.fruit2048.data.swipeDown
-import com.codebythura.fruit2048.data.swipeToLeft
-import com.codebythura.fruit2048.data.swipeToRight
-import com.codebythura.fruit2048.data.swipeUp
-import com.codebythura.fruit2048.database.toState
+import com.codebythura.fruit2048.database.toEngineState
 import com.codebythura.fruit2048.repository.DataStoreRepository
 import com.codebythura.fruit2048.repository.GameStateRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,15 +18,20 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 @Immutable
 data class GameUIState(
     val tileData: List<TileData> = emptyList(),
     val bestScore: Int = 0,
     val score: Int = 0,
     val undoEnabled: Boolean = false,
+    val dialogState: GameDialogState = GameDialogState(),
+)
+
+data class GameDialogState(
     val showGameOverDialog: Boolean = false,
-    val showNewScoreDialog : Boolean = false,
-    val showRestartConfirmDialog : Boolean = false,
+    val showNewScoreDialog: Boolean = false,
+    val showRestartConfirmDialog: Boolean = false,
 )
 
 @HiltViewModel
@@ -42,20 +41,19 @@ class GameViewModel @Inject constructor(
     private val gameEngine: GameEngine,
 ) : ViewModel() {
 
-    private val _gameState = MutableStateFlow(GameState())
+    private val _dialogState = MutableStateFlow(GameDialogState())
     val uiState = combine(
-        _gameState,
+        _dialogState,
+        gameEngine.gameState,
         gameStateRepo.observeRowCount(),
         dataStoreRepo.observeBestScore(),
-    ) { gameState, lastState, bestScore ->
+    ) { dialogState, gameState, stateCount, bestScore ->
         GameUIState(
             tileData = gameState.toTileData(),
             score = gameState.score,
             bestScore = bestScore,
-            undoEnabled = lastState > 0,
-            showGameOverDialog = GameLogic.checkIfGameOver(gameState.gridData),
-            showNewScoreDialog = gameState.showNewScoreDialog,
-            showRestartConfirmDialog = gameState.showRestartConfirmDialog
+            undoEnabled = stateCount > 0,
+            dialogState = dialogState,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -67,57 +65,60 @@ class GameViewModel @Inject constructor(
         startNewGame()
     }
 
-    fun onRestartGame() {
-        if(uiState.value.undoEnabled) {
-            _gameState.update { it.copy(showRestartConfirmDialog = true) }
-        } else {
-            startNewGame()
+    fun onStartNewGame() {
+        if (uiState.value.undoEnabled) {
+            _dialogState.update { it.copy(showRestartConfirmDialog = true) }
+            return
         }
+        startNewGame()
     }
 
     fun startNewGame() {
         viewModelScope.launch {
-            gameStateRepo.deleteAllStates() // delete all game state from db
-            val showNewScoreDialog = dataStoreRepo.updateBestScore(_gameState.value.score)
-            val initialGrid = GameLogic.addRandomData(EMPTY_GRID, count = 2)
-            _gameState.value = GameState(
-                gridData = initialGrid,
-                score = 0,
-                showNewScoreDialog = showNewScoreDialog,
-            )
+            _dialogState.value = GameDialogState()
+            gameStateRepo.deleteAllStates()
+            gameEngine.startNewGame()
         }
-    }
-
-    fun onRestartGameDialogDismiss() {
-        _gameState.update { it.copy(showRestartConfirmDialog = false) }
-    }
-
-    fun onNewScoreDialogDismiss() {
-        _gameState.update { it.copy(showNewScoreDialog = false) }
     }
 
     fun onUndo() {
         viewModelScope.launch {
             gameStateRepo.getAndDeleteLastState()?.let { stateFromDb ->
-                _gameState.value = stateFromDb.toState()
+                gameEngine.undo(stateFromDb.toEngineState())
             }
         }
     }
 
     fun onSwipe(direction: Direction) {
         viewModelScope.launch {
-            gameStateRepo.saveState(_gameState.value.toEntity()) // save the current state first
-            val (swipedGrid, newScore) = when (direction) {
-                Direction.LEFT -> _gameState.value.gridData.swipeToLeft()
-                Direction.RIGHT -> _gameState.value.gridData.swipeToRight()
-                Direction.UP -> _gameState.value.gridData.swipeUp()
-                Direction.DOWN -> _gameState.value.gridData.swipeDown()
-            }
-            _gameState.value = GameState(
-                gridData = GameLogic.addRandomData(swipedGrid),
-                score = _gameState.value.score + newScore
-            )
+            gameStateRepo.saveState(gameEngine.gameState.value.toEntity())
+            gameEngine.onSwipe(direction)
+            _dialogState.update { it.copy(showGameOverDialog = gameEngine.checkIfGameOver()) }
         }
+    }
+
+    fun onGameOverDialogDismiss() {
+        viewModelScope.launch {
+            if(dataStoreRepo.updateBestScore(gameEngine.gameState.value.score)) {
+                _dialogState.update {
+                    it.copy(
+                        showGameOverDialog = false,
+                        showNewScoreDialog = true
+                    )
+                }
+            } else {
+                startNewGame()
+            }
+        }
+    }
+
+    fun onNewScoreDialogDismiss() {
+        _dialogState.update { it.copy(showNewScoreDialog = false) }
+        startNewGame()
+    }
+
+    fun onRestartGameDialogDismiss() {
+        _dialogState.update { it.copy(showRestartConfirmDialog = false) }
     }
 
 }
