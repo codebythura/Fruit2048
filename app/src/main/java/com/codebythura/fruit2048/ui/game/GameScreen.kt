@@ -6,14 +6,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
@@ -21,6 +19,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codebythura.fruit2048.data.AppConsts
 import com.codebythura.fruit2048.data.Direction
+import com.codebythura.fruit2048.data.GameDialogState
+import com.codebythura.fruit2048.data.GameViewModel2
 import com.codebythura.fruit2048.data.TileData
 import com.codebythura.fruit2048.ui.game.components.ActionsRow
 import com.codebythura.fruit2048.ui.game.components.AppTitle
@@ -29,6 +29,7 @@ import com.codebythura.fruit2048.ui.game.dialog.GameOverDialog
 import com.codebythura.fruit2048.ui.game.dialog.NewBestScoreDialog
 import com.codebythura.fruit2048.ui.game.components.ScoreRow
 import com.codebythura.fruit2048.ui.game.dialog.RestartConfirmDialog
+import com.codebythura.fruit2048.ui.game.dialog.ResumeGameDialog
 import kotlinx.coroutines.delay
 import kotlin.math.abs
 import kotlin.time.Duration.Companion.milliseconds
@@ -36,14 +37,17 @@ import kotlin.time.Duration.Companion.milliseconds
 @Composable
 fun GameScreen(
     modifier: Modifier = Modifier,
-    viewModel: GameViewModel = hiltViewModel(),
+    viewModel: GameViewModel2 = hiltViewModel(),
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     GameDialogEffect(
-        state = state,
+        bestScore = state.bestScore,
+        score = state.score,
+        state = state.dialogState,
         startNewGame = viewModel::startNewGame,
+        onGameOverDialogDismiss = viewModel::onGameOverDialogDismiss,
         onRestartGameDialogDismiss = viewModel::onRestartGameDialogDismiss,
         onNewScoreDialogDismiss = viewModel::onNewScoreDialogDismiss,
     )
@@ -55,7 +59,7 @@ fun GameScreen(
                 bestScore = state.bestScore,
                 score = state.score,
                 tileData = state.tileData,
-                onStartNewGame = viewModel::onRestartGame,
+                onStartNewGame = viewModel::onStartNewGame,
                 onUndo = viewModel::onUndo,
                 undoEnabled = state.undoEnabled,
                 modifier = Modifier
@@ -71,15 +75,18 @@ fun GameScreen(
 
 @Composable
 private fun GameDialogEffect(
-    state: GameUIState,
+    score : Int,
+    bestScore : Int,
+    state: GameDialogState,
     startNewGame : () -> Unit,
+    onGameOverDialogDismiss : () -> Unit,
     onNewScoreDialogDismiss : () -> Unit,
     onRestartGameDialogDismiss : () -> Unit,
 ) {
 
     var showGameOverDialog by rememberSaveable { mutableStateOf(false) }
-    LaunchedEffect(state.isGameOver) {
-        if (state.isGameOver) {
+    LaunchedEffect(state.showGameOverDialog) {
+        if (state.showGameOverDialog) {
             delay(AppConsts.defaultDuration.milliseconds) // wait for the last tile animation
             showGameOverDialog = true
         } else {
@@ -88,13 +95,13 @@ private fun GameDialogEffect(
     }
     if (showGameOverDialog) {
         GameOverDialog(
-            score = state.score,
-            onGameRestart = startNewGame
+            score = score,
+            onGameRestart = onGameOverDialogDismiss
         )
     }
     if (state.showNewScoreDialog) {
         NewBestScoreDialog(
-            bestScore = state.bestScore,
+            bestScore = bestScore,
             onDismiss = onNewScoreDialogDismiss
         )
     }

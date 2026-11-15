@@ -3,11 +3,15 @@ package com.codebythura.fruit2048.ui.game
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.codebythura.fruit2048.data.Direction
 import com.codebythura.fruit2048.data.EMPTY_GRID
+import com.codebythura.fruit2048.data.GameEngine
 import com.codebythura.fruit2048.data.GameLogic
 import com.codebythura.fruit2048.data.TileData
+import com.codebythura.fruit2048.data.swipeDown
+import com.codebythura.fruit2048.data.swipeToLeft
+import com.codebythura.fruit2048.data.swipeToRight
+import com.codebythura.fruit2048.data.swipeUp
 import com.codebythura.fruit2048.database.toState
 import com.codebythura.fruit2048.repository.DataStoreRepository
 import com.codebythura.fruit2048.repository.GameStateRepository
@@ -25,8 +29,8 @@ data class GameUIState(
     val tileData: List<TileData> = emptyList(),
     val bestScore: Int = 0,
     val score: Int = 0,
-    val isGameOver: Boolean = false,
     val undoEnabled: Boolean = false,
+    val showGameOverDialog: Boolean = false,
     val showNewScoreDialog : Boolean = false,
     val showRestartConfirmDialog : Boolean = false,
 )
@@ -35,20 +39,21 @@ data class GameUIState(
 class GameViewModel @Inject constructor(
     private val gameStateRepo: GameStateRepository,
     private val dataStoreRepo: DataStoreRepository,
+    private val gameEngine: GameEngine,
 ) : ViewModel() {
 
     private val _gameState = MutableStateFlow(GameState())
     val uiState = combine(
         _gameState,
         gameStateRepo.observeRowCount(),
-        dataStoreRepo.observeBestScore()
+        dataStoreRepo.observeBestScore(),
     ) { gameState, lastState, bestScore ->
         GameUIState(
             tileData = gameState.toTileData(),
             score = gameState.score,
             bestScore = bestScore,
-            isGameOver = GameLogic.checkIfGameOver(gameState.gridData),
             undoEnabled = lastState > 0,
+            showGameOverDialog = GameLogic.checkIfGameOver(gameState.gridData),
             showNewScoreDialog = gameState.showNewScoreDialog,
             showRestartConfirmDialog = gameState.showRestartConfirmDialog
         )
@@ -73,7 +78,7 @@ class GameViewModel @Inject constructor(
     fun startNewGame() {
         viewModelScope.launch {
             gameStateRepo.deleteAllStates() // delete all game state from db
-            val showNewScoreDialog = dataStoreRepo.updateBestScoreIfNecessary(_gameState.value.score)
+            val showNewScoreDialog = dataStoreRepo.updateBestScore(_gameState.value.score)
             val initialGrid = GameLogic.addRandomData(EMPTY_GRID, count = 2)
             _gameState.value = GameState(
                 gridData = initialGrid,
@@ -103,10 +108,10 @@ class GameViewModel @Inject constructor(
         viewModelScope.launch {
             gameStateRepo.saveState(_gameState.value.toEntity()) // save the current state first
             val (swipedGrid, newScore) = when (direction) {
-                Direction.LEFT -> GameLogic.swipeToLeft(_gameState.value.gridData)
-                Direction.RIGHT -> GameLogic.swipeToRight(_gameState.value.gridData)
-                Direction.UP -> GameLogic.swipeUp(_gameState.value.gridData)
-                Direction.DOWN -> GameLogic.swipeDown(_gameState.value.gridData)
+                Direction.LEFT -> _gameState.value.gridData.swipeToLeft()
+                Direction.RIGHT -> _gameState.value.gridData.swipeToRight()
+                Direction.UP -> _gameState.value.gridData.swipeUp()
+                Direction.DOWN -> _gameState.value.gridData.swipeDown()
             }
             _gameState.value = GameState(
                 gridData = GameLogic.addRandomData(swipedGrid),
