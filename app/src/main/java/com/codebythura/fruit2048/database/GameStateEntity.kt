@@ -1,5 +1,6 @@
 package com.codebythura.fruit2048.database
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.codebythura.fruit2048.data.GameEngineState
@@ -11,6 +12,8 @@ data class GameStateEntity(
     val id : Int = 0,
     val state : GridMatrix,
     val score : Int,
+    @ColumnInfo(name = "is_over")
+    val isOver : Boolean
 )
 
 fun GameStateEntity.toEngineState() = GameEngineState(

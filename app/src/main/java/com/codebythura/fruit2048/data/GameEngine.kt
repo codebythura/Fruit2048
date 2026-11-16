@@ -10,6 +10,7 @@ import javax.inject.Inject
 data class GameEngineState(
     val gridData: GridMatrix = EMPTY_GRID,
     val score: Int = 0,
+    val isOver : Boolean = false,
 ) {
     fun toTileData(): List<TileData> {
         return gridData.flatMapIndexed { row, list ->
@@ -19,6 +20,7 @@ data class GameEngineState(
     fun toEntity() = GameStateEntity(
         state = gridData,
         score = score,
+        isOver = isOver
     )
 }
 
