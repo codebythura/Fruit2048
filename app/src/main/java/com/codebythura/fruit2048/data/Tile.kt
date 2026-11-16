@@ -1,10 +1,17 @@
 package com.codebythura.fruit2048.data
 
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 data class Tile(val value: Int, val icon: String, val color: Color, val borderColor: Color)
 
-val lightTileMap = mapOf<Int, Tile>(
+@Composable
+fun getTile(value : Int) : Tile {
+    return if(isSystemInDarkTheme()) _darkTileMap[value]!! else _lightTileMap[value]!!
+}
+
+private val _lightTileMap = mapOf<Int, Tile>(
     2 to Tile(value = 2, icon = "\uD83C\uDF49", color = Color(0xFFb5e5bb), borderColor = Color(0xFF6bcb77)),
     4 to Tile(4, icon = "\uD83C\uDF53", color = Color(0xFFffbcdf), borderColor = Color(0xFFff7abe)),
     8 to Tile(8, icon = "\uD83C\uDF4C", color = Color(0xFFF3E56C), borderColor = Color(0xFFEFD54A)),
@@ -18,7 +25,7 @@ val lightTileMap = mapOf<Int, Tile>(
     2048 to Tile(2048, icon = "\uD83C\uDF51", color = Color(0xFFeba3f7), borderColor = Color(0xFFd647f0)),
 )
 
-val darkTileMap = mapOf<Int, Tile>(
+private val _darkTileMap = mapOf<Int, Tile>(
     2 to Tile(value = 2, icon = "\uD83C\uDF49", color = Color(0xFF78B678), borderColor = Color(0xFF308F3B)),
     4 to Tile(4, icon = "\uD83C\uDF53", color = Color(0xFFE1A1B8), borderColor = Color(0xFFBD568A)),
     8 to Tile(8, icon = "\uD83C\uDF4C", color = Color(0xFFD7C45A), borderColor = Color(0xFFBEA736)),

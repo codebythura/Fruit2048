@@ -2,7 +2,9 @@ package com.codebythura.fruit2048.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.codebythura.fruit2048.data.GameEngineState
 import com.codebythura.fruit2048.data.GridMatrix
+import com.codebythura.fruit2048.ui.game.GameState
 
 @Entity(tableName = "game_state")
 data class GameStateEntity(
@@ -12,3 +14,12 @@ data class GameStateEntity(
     val score : Int,
 )
 
+fun GameStateEntity.toState() = GameState(
+    gridData = state,
+    score = score,
+)
+
+fun GameStateEntity.toEngineState() = GameEngineState(
+    gridData = state,
+    score = score,
+)

@@ -1,4 +1,4 @@
-package com.codebythura.fruit2048.ui.home.components
+package com.codebythura.fruit2048.ui.game.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,8 +12,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.codebythura.fruit2048.R
+import com.codebythura.fruit2048.data.AppConsts
 
 
 @Composable
@@ -27,12 +30,12 @@ fun ScoreRow(
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         ScoreContainer(
-            title = "Best Score",
+            title = stringResource(R.string.best_score),
             score = bestScore,
             modifier = Modifier.weight(1f),
         )
         ScoreContainer(
-            title = "Current Score",
+            title = stringResource(R.string.current_score),
             score = score,
             modifier = Modifier.weight(1f),
         )
@@ -48,7 +51,7 @@ private fun ScoreContainer(
     Surface(
         modifier = modifier,
         color = MaterialTheme.colorScheme.secondaryContainer,
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(AppConsts.defaultCornerRadius),
     ) {
         Column(
             modifier = Modifier.padding(12.dp),
@@ -58,11 +61,13 @@ private fun ScoreContainer(
             Text(
                 text = title,
                 color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold)
+                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.bodyLarge
             )
             Text(
                 text = score.toString(),
-                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
+                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }

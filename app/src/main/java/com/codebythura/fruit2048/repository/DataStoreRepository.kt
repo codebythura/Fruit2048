@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 interface DataStoreRepository {
     fun observeBestScore(): Flow<Int>
-    suspend fun updateBestScoreIfNecessary(newScore: Int) : Boolean
+    suspend fun updateBestScore(newScore: Int) : Boolean
 }
 
 class DataStoreRepositoryImpl @Inject constructor(private val datastore: DataStore<AppData>) :
@@ -20,7 +20,7 @@ class DataStoreRepositoryImpl @Inject constructor(private val datastore: DataSto
 
     override fun observeBestScore() = datastore.data.map { it.bestScore }.flowOn(Dispatchers.IO)
 
-    override suspend fun updateBestScoreIfNecessary(newScore: Int): Boolean =
+    override suspend fun updateBestScore(newScore: Int): Boolean =
         withContext(Dispatchers.IO) {
             var updated = false
             datastore.updateData { currentData ->
