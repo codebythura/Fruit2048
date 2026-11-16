@@ -32,7 +32,7 @@ fun ResumeGameDialog(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = "Resume",
+                text = "Confirm",
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleLarge,

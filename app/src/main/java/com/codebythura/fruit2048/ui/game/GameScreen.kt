@@ -27,6 +27,7 @@ import com.codebythura.fruit2048.ui.game.dialog.GameOverDialog
 import com.codebythura.fruit2048.ui.game.dialog.NewBestScoreDialog
 import com.codebythura.fruit2048.ui.game.components.ScoreRow
 import com.codebythura.fruit2048.ui.game.dialog.RestartConfirmDialog
+import com.codebythura.fruit2048.ui.game.dialog.ResumeGameDialog
 import kotlinx.coroutines.delay
 import kotlin.math.abs
 import kotlin.time.Duration.Companion.milliseconds
@@ -47,6 +48,7 @@ fun GameScreen(
         onGameOverDialogDismiss = viewModel::onGameOverDialogDismiss,
         onRestartGameDialogDismiss = viewModel::onRestartGameDialogDismiss,
         onNewScoreDialogDismiss = viewModel::onNewScoreDialogDismiss,
+        onResumeGameDialogDismiss = viewModel::onResumeGameDialogDismiss
     )
 
     Scaffold(
@@ -56,7 +58,7 @@ fun GameScreen(
                 bestScore = state.bestScore,
                 score = state.score,
                 tileData = state.tileData,
-                onStartNewGame = viewModel::onStartNewGame,
+                onStartNewGame = viewModel::onRestartGame,
                 onUndo = viewModel::onUndo,
                 undoEnabled = state.undoEnabled,
                 modifier = Modifier
@@ -79,6 +81,7 @@ private fun GameDialogEffect(
     onGameOverDialogDismiss : () -> Unit,
     onNewScoreDialogDismiss : () -> Unit,
     onRestartGameDialogDismiss : () -> Unit,
+    onResumeGameDialogDismiss : () -> Unit,
 ) {
 
     var showGameOverDialog by rememberSaveable { mutableStateOf(false) }
@@ -105,6 +108,12 @@ private fun GameDialogEffect(
     if (state.showRestartConfirmDialog) {
         RestartConfirmDialog(
             onDismiss = onRestartGameDialogDismiss,
+            onConfirm = startNewGame
+        )
+    }
+    if(state.showResumeGameDialog) {
+        ResumeGameDialog(
+            onDismiss = onResumeGameDialogDismiss,
             onConfirm = startNewGame
         )
     }

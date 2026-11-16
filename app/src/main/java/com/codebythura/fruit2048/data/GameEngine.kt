@@ -11,24 +11,21 @@ data class GameEngineState(
     val gridData: GridMatrix = EMPTY_GRID,
     val score: Int = 0,
 ) {
-
     fun toTileData(): List<TileData> {
         return gridData.flatMapIndexed { row, list ->
             list.mapIndexedNotNull { col, data -> data?.intoTile(row, col) }
         }
     }
-
     fun toEntity() = GameStateEntity(
         state = gridData,
         score = score,
     )
-
 }
 
 abstract class GameEngine {
     abstract val gameState: StateFlow<GameEngineState>
     open fun checkIfGameOver(): Boolean = gameState.value.gridData.checkIfGameOver()
-    abstract fun startNewGame()
+    abstract fun startGame(state : GameEngineState? = null)
     abstract fun undo(newState : GameEngineState)
     abstract fun onSwipe(direction : Direction)
 }
@@ -43,8 +40,8 @@ class GameEngineImpl @Inject constructor() : GameEngine() {
     val gridData: GridMatrix
         get() = _gameState.value.gridData
 
-    override fun startNewGame() {
-        _gameState.value = GameEngineState(
+    override fun startGame(state : GameEngineState?) {
+        _gameState.value = state ?: GameEngineState(
             gridData = EMPTY_GRID.addRandomData(count = 2),
             score = 0,
         )
