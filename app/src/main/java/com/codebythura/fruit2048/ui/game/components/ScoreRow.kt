@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.codebythura.fruit2048.R
 import com.codebythura.fruit2048.data.AppConsts
+import com.codebythura.fruit2048.data.format
 
 
 @Composable
@@ -65,7 +66,7 @@ private fun ScoreContainer(
                 style = MaterialTheme.typography.bodyLarge
             )
             Text(
-                text = score.toString(),
+                text = score.format(),
                 fontWeight = FontWeight.SemiBold,
                 style = MaterialTheme.typography.bodyMedium
             )

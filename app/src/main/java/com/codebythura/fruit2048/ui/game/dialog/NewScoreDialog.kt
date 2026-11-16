@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.codebythura.fruit2048.R
+import com.codebythura.fruit2048.data.format
 
 @Composable
 fun NewBestScoreDialog(
@@ -35,7 +36,7 @@ fun NewBestScoreDialog(
                 style = MaterialTheme.typography.titleLarge,
             )
             Text(
-                text = "New Best Score: $bestScore",
+                text = "New Best Score: ${bestScore.format()}",
                 fontWeight = FontWeight.SemiBold,
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = 12.dp, bottom = 18.dp)

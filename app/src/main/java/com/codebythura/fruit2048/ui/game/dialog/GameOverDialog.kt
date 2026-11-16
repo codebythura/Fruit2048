@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.codebythura.fruit2048.R
 import com.codebythura.fruit2048.data.AppConsts
+import com.codebythura.fruit2048.data.format
 import com.codebythura.fruit2048.ui.theme.Fruit2048Theme
 
 
@@ -43,7 +44,7 @@ fun GameOverDialog(
                 style = MaterialTheme.typography.titleLarge,
             )
             Text(
-                text = "Final score: $score",
+                text = "Final score: ${score.format()}",
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = 12.dp, bottom = 18.dp)
             )
