@@ -26,7 +26,6 @@ data class GameEngineState(
 
 abstract class GameEngine {
     abstract val gameState: StateFlow<GameEngineState>
-    open fun checkIfGameOver(): Boolean = gameState.value.gridData.checkIfGameOver()
     abstract fun startGame(state : GameEngineState? = null)
     abstract fun undo(newState : GameEngineState)
     abstract fun onSwipe(direction : Direction)
@@ -43,10 +42,7 @@ class GameEngineImpl @Inject constructor() : GameEngine() {
         get() = _gameState.value.gridData
 
     override fun startGame(state : GameEngineState?) {
-        _gameState.value = state ?: GameEngineState(
-            gridData = EMPTY_GRID.addRandomData(count = 2),
-            score = 0,
-        )
+        _gameState.value = state ?: GameEngineState(gridData = EMPTY_GRID.addRandomData(count = 2))
     }
 
     override fun undo(newState : GameEngineState) {
@@ -54,14 +50,16 @@ class GameEngineImpl @Inject constructor() : GameEngine() {
     }
 
     override fun onSwipe(direction: Direction) {
-        val (newGrid,newScore) =  when(direction) {
+        val (swipedGrid,newScore) =  when(direction) {
             Direction.LEFT -> gridData.swipeToLeft()
             Direction.RIGHT -> gridData.swipeToRight()
             Direction.UP -> gridData.swipeUp()
             Direction.DOWN -> gridData.swipeDown()
         }
+        val newGrid = swipedGrid.addRandomData()
         _gameState.value = GameEngineState(
-            gridData = newGrid.addRandomData(),
+            gridData = newGrid,
+            isOver = newGrid.checkIfGameOver(),
             score = _gameState.value.score + newScore
         )
     }

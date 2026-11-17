@@ -19,4 +19,5 @@ data class GameStateEntity(
 fun GameStateEntity.toEngineState() = GameEngineState(
     gridData = state,
     score = score,
+    isOver = isOver,
 )

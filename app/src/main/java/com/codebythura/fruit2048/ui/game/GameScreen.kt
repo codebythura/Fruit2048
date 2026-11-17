@@ -39,11 +39,11 @@ fun GameScreen(
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-
     GameDialogEffect(
         bestScore = state.bestScore,
         score = state.score,
         state = state.dialogState,
+        isGameOver = state.isOver,
         startNewGame = viewModel::startNewGame,
         onGameOverDialogDismiss = viewModel::onGameOverDialogDismiss,
         onRestartGameDialogDismiss = viewModel::onRestartGameDialogDismiss,
@@ -76,6 +76,7 @@ fun GameScreen(
 private fun GameDialogEffect(
     score : Int,
     bestScore : Int,
+    isGameOver : Boolean,
     state: GameDialogState,
     startNewGame : () -> Unit,
     onGameOverDialogDismiss : () -> Unit,
@@ -85,8 +86,8 @@ private fun GameDialogEffect(
 ) {
 
     var showGameOverDialog by rememberSaveable { mutableStateOf(false) }
-    LaunchedEffect(state.showGameOverDialog) {
-        if (state.showGameOverDialog) {
+    LaunchedEffect(isGameOver) {
+        if (isGameOver) {
             delay(AppConsts.defaultDuration.milliseconds) // wait for the last tile animation
             showGameOverDialog = true
         } else {

@@ -25,11 +25,11 @@ data class GameUIState(
     val bestScore: Int = 0,
     val score: Int = 0,
     val undoEnabled: Boolean = false,
+    val isOver : Boolean = false,
     val dialogState: GameDialogState = GameDialogState(),
 )
 
 data class GameDialogState(
-    val showGameOverDialog: Boolean = false,
     val showNewScoreDialog: Boolean = false,
     val showRestartConfirmDialog: Boolean = false,
     val showResumeGameDialog: Boolean = false,
@@ -54,6 +54,7 @@ class GameViewModel @Inject constructor(
             score = gameState.score,
             bestScore = bestScore,
             undoEnabled = stateCount > 1,
+            isOver = gameState.isOver,
             dialogState = dialogState,
         )
     }.stateIn(
@@ -103,28 +104,19 @@ class GameViewModel @Inject constructor(
             }
             gameEngine.onSwipe(direction)
             gameStateRepo.saveState(gameEngine.gameState.value.toEntity())
-            _dialogState.update { it.copy(showGameOverDialog = gameEngine.checkIfGameOver()) }
         }
     }
 
     fun onGameOverDialogDismiss() {
         viewModelScope.launch {
-            if (dataStoreRepo.updateBestScore(gameEngine.gameState.value.score)) {
-                _dialogState.update {
-                    it.copy(
-                        showGameOverDialog = false,
-                        showNewScoreDialog = true
-                    )
-                }
-            } else {
-                startNewGame()
-            }
+            val showNewScoreDialog = dataStoreRepo.updateBestScore(gameEngine.gameState.value.score)
+            _dialogState.update { it.copy(showNewScoreDialog = showNewScoreDialog) }
+            startNewGame()
         }
     }
 
     fun onNewScoreDialogDismiss() {
         _dialogState.update { it.copy(showNewScoreDialog = false) }
-        startNewGame()
     }
 
     fun onRestartGameDialogDismiss() {
