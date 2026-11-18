@@ -1,10 +1,14 @@
 package com.codebythura.fruit2048.data
 
+import androidx.annotation.VisibleForTesting
 import kotlin.random.Random
 
 const val GRID_SIZE = 4
 typealias GridMatrix = List<List<GridData?>>
 val EMPTY_GRID: GridMatrix = List(GRID_SIZE) { List(GRID_SIZE) { null } }
+
+const val INVALID_GRID_ERROR_MESSAGE = "Grid size must be between 0 and $GRID_SIZE."
+const val INVALID_LIST_ERROR_MESSAGE = "List size must be between 0 and $GRID_SIZE."
 
 fun GridMatrix.checkIfGameOver(): Boolean {
     for (r in 0 until GRID_SIZE) {
@@ -42,20 +46,23 @@ fun GridMatrix.addRandomData(count : Int = 1) : GridMatrix {
 }
 
 fun GridMatrix.swipeUp(): Pair<GridMatrix, Int> {
-    val rotated90AntiClockwise = rotate90AntiClockwise()
+    if(this.size != GRID_SIZE || this.any { it.size !in 0..GRID_SIZE }) throw IllegalStateException(INVALID_GRID_ERROR_MESSAGE)
+    val rotated90AntiClockwise = this.map { it.padToGridSize() }.rotate90AntiClockwise()
     val (swipedToLeft, score) = rotated90AntiClockwise.swipeToLeft()
     val rotated90Clockwise = swipedToLeft.rotate90Clockwise()
     return Pair(rotated90Clockwise, score)
 }
 
 fun GridMatrix.swipeDown(): Pair<GridMatrix, Int> {
-    val rotated90Clockwise = rotate90Clockwise()
+    if(this.size != GRID_SIZE || this.any { it.size !in 0..GRID_SIZE }) throw IllegalStateException(INVALID_GRID_ERROR_MESSAGE)
+    val rotated90Clockwise = this.map { it.padToGridSize() }.rotate90Clockwise()
     val (swipedToLeft, score) = rotated90Clockwise.swipeToLeft()
     val rotated90AntiClockwise = swipedToLeft.rotate90AntiClockwise()
     return Pair(rotated90AntiClockwise, score)
 }
 
 fun GridMatrix.swipeToLeft(): Pair<GridMatrix, Int> {
+    if(this.size != GRID_SIZE || this.any { it.size !in 0..GRID_SIZE }) throw IllegalStateException(INVALID_GRID_ERROR_MESSAGE)
     var totalScore = 0
     val swipedToLeft = this.map { row ->
         val (merged, score) = row.mergeToLeft()
@@ -66,6 +73,7 @@ fun GridMatrix.swipeToLeft(): Pair<GridMatrix, Int> {
 }
 
 fun GridMatrix.swipeToRight(): Pair<GridMatrix, Int> {
+    if(this.size != GRID_SIZE || this.any { it.size !in 0..GRID_SIZE }) throw IllegalStateException(INVALID_GRID_ERROR_MESSAGE)
     val reversed = this.map { row -> row.reversed() }
     val (swipedToLeft, score) = reversed.swipeToLeft()
     val swipedToRight = swipedToLeft.map { row -> row.reversed() }
@@ -88,12 +96,16 @@ fun GridMatrix.rotate90AntiClockwise() : GridMatrix {
     }
 }
 
-private fun List<GridData?>.padToGridSize(): List<GridData?> {
+@VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+fun List<GridData?>.padToGridSize(): List<GridData?> {
+    if(this.size > GRID_SIZE) throw IllegalStateException(INVALID_LIST_ERROR_MESSAGE)
     val missing = (GRID_SIZE - this.size).coerceAtLeast(0)
     return this + List(missing) { null }
 }
 
-private fun List<GridData?>.mergeToLeft(): Pair<List<GridData?>, Int> {
+@VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+fun List<GridData?>.mergeToLeft(): Pair<List<GridData?>, Int> {
+    if(this.size !in 0..GRID_SIZE) throw IllegalStateException(INVALID_LIST_ERROR_MESSAGE)
     val notNulls = this.filterNotNull()
     val merged = mutableListOf<GridData>()
     var mergedScore = 0
