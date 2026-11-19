@@ -21,7 +21,9 @@ object DatabaseModule {
             context,
             AppDatabase::class.java,
             "game_db"
-        ).fallbackToDestructiveMigration(false).build()
+        )
+        .fallbackToDestructiveMigration(true)
+        .build()
     }
 
 }

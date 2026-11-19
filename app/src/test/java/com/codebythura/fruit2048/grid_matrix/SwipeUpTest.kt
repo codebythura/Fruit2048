@@ -3,8 +3,7 @@ package com.codebythura.fruit2048.grid_matrix
 import com.codebythura.fruit2048.data.GRID_SIZE
 import com.codebythura.fruit2048.data.GridData
 import com.codebythura.fruit2048.data.GridMatrix
-import com.codebythura.fruit2048.data.INVALID_GRID_ERROR_MESSAGE
-import com.codebythura.fruit2048.data.swipeDown
+import com.codebythura.fruit2048.data.INVALID_GRID_MESSAGE
 import com.codebythura.fruit2048.data.swipeUp
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -20,7 +19,7 @@ class SwipeUpTest {
         val exception = assertThrows(IllegalStateException::class.java) {
             initialGrid.swipeUp()
         }
-        assertEquals(INVALID_GRID_ERROR_MESSAGE,exception.message)
+        assertEquals(INVALID_GRID_MESSAGE,exception.message)
     }
 
 
@@ -36,7 +35,7 @@ class SwipeUpTest {
         )
 
         val exception = assertThrows(IllegalStateException::class.java) { gridMatrix.swipeUp() }
-        assertEquals(INVALID_GRID_ERROR_MESSAGE,exception.message)
+        assertEquals(INVALID_GRID_MESSAGE,exception.message)
 
     }
 

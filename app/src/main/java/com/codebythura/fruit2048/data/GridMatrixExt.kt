@@ -7,10 +7,12 @@ const val GRID_SIZE = 4
 typealias GridMatrix = List<List<GridData?>>
 val EMPTY_GRID: GridMatrix = List(GRID_SIZE) { List(GRID_SIZE) { null } }
 
-const val INVALID_GRID_ERROR_MESSAGE = "Grid size must be between 0 and $GRID_SIZE."
-const val INVALID_LIST_ERROR_MESSAGE = "List size must be between 0 and $GRID_SIZE."
+const val INVALID_GRID_MESSAGE = "Grid size must be between 0 and $GRID_SIZE."
+const val INVALID_LIST_MESSAGE = "List size must be between 0 and $GRID_SIZE."
+const val INVALID_RANDOM_COUNT_MESSAGE = "Count must be greater than 0."
 
 fun GridMatrix.checkIfGameOver(): Boolean {
+    if(this.size != GRID_SIZE || this.any { it.size !in 0..GRID_SIZE }) throw IllegalStateException(INVALID_GRID_MESSAGE)
     for (r in 0 until GRID_SIZE) {
         for (c in 0 until GRID_SIZE) {
             val currentValue = this[r][c] ?: return false
@@ -28,9 +30,11 @@ fun GridMatrix.checkIfGameOver(): Boolean {
 }
 
 fun GridMatrix.addRandomData(count : Int = 1) : GridMatrix {
-    if (count <= 0) throw IllegalArgumentException("Count must be greater than 0")
+    if (count <= 0) throw IllegalArgumentException(INVALID_RANDOM_COUNT_MESSAGE)
     val emptyCells = this.flatMapIndexed { row, list ->
-        list.mapIndexedNotNull { col, data -> if (data == null) row to col else null }
+        list.mapIndexedNotNull { col, data ->
+            if (data == null) row to col else null
+        }
     }.shuffled()
     if (emptyCells.isEmpty()) return this
 
@@ -46,7 +50,7 @@ fun GridMatrix.addRandomData(count : Int = 1) : GridMatrix {
 }
 
 fun GridMatrix.swipeUp(): Pair<GridMatrix, Int> {
-    if(this.size != GRID_SIZE || this.any { it.size !in 0..GRID_SIZE }) throw IllegalStateException(INVALID_GRID_ERROR_MESSAGE)
+    if(this.size != GRID_SIZE || this.any { it.size !in 0..GRID_SIZE }) throw IllegalStateException(INVALID_GRID_MESSAGE)
     val rotated90AntiClockwise = this.map { it.padToGridSize() }.rotate90AntiClockwise()
     val (swipedToLeft, score) = rotated90AntiClockwise.swipeToLeft()
     val rotated90Clockwise = swipedToLeft.rotate90Clockwise()
@@ -54,7 +58,7 @@ fun GridMatrix.swipeUp(): Pair<GridMatrix, Int> {
 }
 
 fun GridMatrix.swipeDown(): Pair<GridMatrix, Int> {
-    if(this.size != GRID_SIZE || this.any { it.size !in 0..GRID_SIZE }) throw IllegalStateException(INVALID_GRID_ERROR_MESSAGE)
+    if(this.size != GRID_SIZE || this.any { it.size !in 0..GRID_SIZE }) throw IllegalStateException(INVALID_GRID_MESSAGE)
     val rotated90Clockwise = this.map { it.padToGridSize() }.rotate90Clockwise()
     val (swipedToLeft, score) = rotated90Clockwise.swipeToLeft()
     val rotated90AntiClockwise = swipedToLeft.rotate90AntiClockwise()
@@ -62,7 +66,7 @@ fun GridMatrix.swipeDown(): Pair<GridMatrix, Int> {
 }
 
 fun GridMatrix.swipeToLeft(): Pair<GridMatrix, Int> {
-    if(this.size != GRID_SIZE || this.any { it.size !in 0..GRID_SIZE }) throw IllegalStateException(INVALID_GRID_ERROR_MESSAGE)
+    if(this.size != GRID_SIZE || this.any { it.size !in 0..GRID_SIZE }) throw IllegalStateException(INVALID_GRID_MESSAGE)
     var totalScore = 0
     val swipedToLeft = this.map { row ->
         val (merged, score) = row.mergeToLeft()
@@ -73,7 +77,7 @@ fun GridMatrix.swipeToLeft(): Pair<GridMatrix, Int> {
 }
 
 fun GridMatrix.swipeToRight(): Pair<GridMatrix, Int> {
-    if(this.size != GRID_SIZE || this.any { it.size !in 0..GRID_SIZE }) throw IllegalStateException(INVALID_GRID_ERROR_MESSAGE)
+    if(this.size != GRID_SIZE || this.any { it.size !in 0..GRID_SIZE }) throw IllegalStateException(INVALID_GRID_MESSAGE)
     val reversed = this.map { row -> row.reversed() }
     val (swipedToLeft, score) = reversed.swipeToLeft()
     val swipedToRight = swipedToLeft.map { row -> row.reversed() }
@@ -98,14 +102,14 @@ fun GridMatrix.rotate90AntiClockwise() : GridMatrix {
 
 @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
 fun List<GridData?>.padToGridSize(): List<GridData?> {
-    if(this.size > GRID_SIZE) throw IllegalStateException(INVALID_LIST_ERROR_MESSAGE)
+    if(this.size > GRID_SIZE) throw IllegalStateException(INVALID_LIST_MESSAGE)
     val missing = (GRID_SIZE - this.size).coerceAtLeast(0)
     return this + List(missing) { null }
 }
 
 @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
 fun List<GridData?>.mergeToLeft(): Pair<List<GridData?>, Int> {
-    if(this.size !in 0..GRID_SIZE) throw IllegalStateException(INVALID_LIST_ERROR_MESSAGE)
+    if(this.size !in 0..GRID_SIZE) throw IllegalStateException(INVALID_LIST_MESSAGE)
     val notNulls = this.filterNotNull()
     val merged = mutableListOf<GridData>()
     var mergedScore = 0
