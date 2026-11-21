@@ -17,6 +17,8 @@ protobuf_kotlinlite = "4.36.2"
 hilt = "2.60.1"
 hiltNavigationCompose = "1.4.0"
 robolectric = "4.18"
+sqliteBundled = "2.7.1"
+turbine = "1.2.1"
 
 
 [libraries]
@@ -47,6 +49,8 @@ hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt"
 hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+androidx-sqlite-bundled = { group = "androidx.sqlite", name = "sqlite-bundled", version.ref = "sqliteBundled" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 
 [plugins]
