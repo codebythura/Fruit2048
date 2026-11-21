@@ -70,7 +70,7 @@ class GameViewModel @Inject constructor(
             if(gameStateRepo.getRowCount() > 1) {
                 _dialogState.update { it.copy(showResumeGameDialog = true) }
             } else {
-                startNewGame()
+                startNewGame(clearDialogs = false)
             }
         }
     }
@@ -83,9 +83,9 @@ class GameViewModel @Inject constructor(
         startNewGame()
     }
 
-    fun startNewGame() {
+    fun startNewGame(clearDialogs: Boolean = true) {
         viewModelScope.launch {
-            _dialogState.value = GameDialogState()
+            if(clearDialogs) _dialogState.value = GameDialogState()
             gameStateRepo.deleteAllStates()
             gameEngine.startGame()
         }
@@ -98,25 +98,38 @@ class GameViewModel @Inject constructor(
     }
 
     fun onSwipe(direction: Direction) {
+
         viewModelScope.launch {
-            if(gameStateRepo.getRowCount() == 0) {
-                gameStateRepo.saveState(gameEngine.gameState.value.toEntity())
-            }
+
+            val previousState = gameEngine.gameState.value
+            if (previousState.isOver) return@launch
+
+            val currentRowCount = gameStateRepo.getRowCount()
+            if (currentRowCount == 0) { gameStateRepo.saveState(previousState.toEntity()) }
+
             gameEngine.onSwipe(direction)
-            gameStateRepo.saveState(gameEngine.gameState.value.toEntity())
+            val updatedState = gameEngine.gameState.value
+
+            if (updatedState.gridData != previousState.gridData || updatedState.score != previousState.score) {
+                gameStateRepo.saveState(updatedState.toEntity())
+            } else if(currentRowCount == 0) {
+                gameStateRepo.deleteAllStates()
+            }
+
         }
     }
 
     fun onGameOverDialogDismiss() {
         viewModelScope.launch {
-            val showNewScoreDialog = dataStoreRepo.updateBestScore(gameEngine.gameState.value.score)
-            _dialogState.update { it.copy(showNewScoreDialog = showNewScoreDialog) }
-            startNewGame()
+            dataStoreRepo.updateBestScore(gameEngine.gameState.value.score).let { updated ->
+                if(updated) { _dialogState.update { it.copy(showNewScoreDialog = true) } }
+                else { startNewGame() }
+            }
         }
     }
 
     fun onNewScoreDialogDismiss() {
-        _dialogState.update { it.copy(showNewScoreDialog = false) }
+        startNewGame()
     }
 
     fun onRestartGameDialogDismiss() {
