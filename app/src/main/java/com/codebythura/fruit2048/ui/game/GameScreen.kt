@@ -14,9 +14,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.codebythura.fruit2048.R
 import com.codebythura.fruit2048.data.AppConsts
 import com.codebythura.fruit2048.data.Direction
 import com.codebythura.fruit2048.data.TileData
@@ -39,32 +42,62 @@ fun GameScreen(
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    GameScreenContent(
+        state = state,
+        onUndo = viewModel::onUndo,
+        onSwipe = viewModel::onSwipe,
+        onRestartGame = viewModel::onRestartGame,
+        startNewGame = viewModel::startNewGame,
+        onGameOverDialogDismiss = viewModel::onGameOverDialogDismiss,
+        onNewScoreDialogDismiss = viewModel::onNewScoreDialogDismiss,
+        onRestartGameDialogDismiss = viewModel::onRestartGameDialogDismiss,
+        onResumeGameDialogDismiss = viewModel::onResumeGameDialogDismiss,
+        modifier = modifier
+    )
+
+}
+
+@Composable
+fun GameScreenContent(
+    state: GameUIState,
+    startNewGame: () -> Unit,
+    onUndo: () -> Unit,
+    onSwipe: (Direction) -> Unit,
+    onRestartGame: () -> Unit,
+    onGameOverDialogDismiss: () -> Unit,
+    onNewScoreDialogDismiss: () -> Unit,
+    onRestartGameDialogDismiss: () -> Unit,
+    onResumeGameDialogDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+
     GameDialogEffect(
         bestScore = state.bestScore,
         score = state.score,
         state = state.dialogState,
         isGameOver = state.isOver,
-        startNewGame = viewModel::startNewGame,
-        onGameOverDialogDismiss = viewModel::onGameOverDialogDismiss,
-        onRestartGameDialogDismiss = viewModel::onRestartGameDialogDismiss,
-        onNewScoreDialogDismiss = viewModel::onNewScoreDialogDismiss,
-        onResumeGameDialogDismiss = viewModel::onResumeGameDialogDismiss
+        startNewGame = startNewGame,
+        onGameOverDialogDismiss = onGameOverDialogDismiss,
+        onRestartGameDialogDismiss = onRestartGameDialogDismiss,
+        onNewScoreDialogDismiss = onNewScoreDialogDismiss,
+        onResumeGameDialogDismiss = onResumeGameDialogDismiss
     )
 
     Scaffold(
         modifier = modifier,
         content = { innerPadding ->
-            HomeContent(
+            GameContent(
                 bestScore = state.bestScore,
                 score = state.score,
                 tileData = state.tileData,
-                onStartNewGame = viewModel::onRestartGame,
-                onUndo = viewModel::onUndo,
+                onStartNewGame = onRestartGame,
+                onUndo = onUndo,
                 undoEnabled = state.undoEnabled,
                 modifier = Modifier
+                    .testTag(stringResource(R.string.game_content))
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .onSwipe(onSwipe = viewModel::onSwipe)
+                    .onSwipe(onSwipe = onSwipe)
                     .padding(start = 24.dp, end = 24.dp, top = 64.dp)
             )
         }
@@ -74,15 +107,15 @@ fun GameScreen(
 
 @Composable
 private fun GameDialogEffect(
-    score : Int,
-    bestScore : Int,
-    isGameOver : Boolean,
+    score: Int,
+    bestScore: Int,
+    isGameOver: Boolean,
     state: GameDialogState,
-    startNewGame : () -> Unit,
-    onGameOverDialogDismiss : () -> Unit,
-    onNewScoreDialogDismiss : () -> Unit,
-    onRestartGameDialogDismiss : () -> Unit,
-    onResumeGameDialogDismiss : () -> Unit,
+    startNewGame: () -> Unit,
+    onGameOverDialogDismiss: () -> Unit,
+    onNewScoreDialogDismiss: () -> Unit,
+    onRestartGameDialogDismiss: () -> Unit,
+    onResumeGameDialogDismiss: () -> Unit,
 ) {
 
     var showGameOverDialog by rememberSaveable { mutableStateOf(false) }
@@ -112,21 +145,21 @@ private fun GameDialogEffect(
             onConfirm = startNewGame
         )
     }
-    if(state.showResumeGameDialog) {
+    if (state.showResumeGameDialog) {
         ResumeGameDialog(
-            onDismiss = onResumeGameDialogDismiss,
-            onConfirm = startNewGame
+            onResume = onResumeGameDialogDismiss,
+            onNewGame = startNewGame
         )
     }
 }
 
 @Composable
-private fun HomeContent(
-    bestScore: Int,
+private fun GameContent(
     score: Int,
+    bestScore: Int,
     tileData: List<TileData>,
-    onStartNewGame: () -> Unit,
     onUndo: () -> Unit,
+    onStartNewGame: () -> Unit,
     undoEnabled: Boolean,
     modifier: Modifier = Modifier,
 ) {

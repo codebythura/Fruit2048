@@ -14,19 +14,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.codebythura.fruit2048.R
 import com.codebythura.fruit2048.data.AppConsts
 
 @Composable
 fun ResumeGameDialog(
-    onDismiss : () -> Unit,
-    onConfirm : () -> Unit,
+    onResume: () -> Unit,
+    onNewGame: () -> Unit,
 ) {
-    AppDialog(onDismissRequest = onDismiss) {
+    AppDialog(onDismissRequest = onResume) {
         Column(
             modifier = Modifier
+                .testTag(stringResource(R.string.game_resume_dialog))
                 .fillMaxWidth()
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -47,12 +51,16 @@ fun ResumeGameDialog(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 ResumeGameButton(
-                    onClick = onDismiss,
-                    modifier = Modifier.weight(1f)
+                    onClick = onResume,
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag(stringResource(R.string.resume_game_button))
                 )
                 NewGameButton(
-                    onClick = onConfirm,
-                    modifier = Modifier.weight(1f)
+                    onClick = onNewGame,
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag(stringResource(R.string.dialog_new_game_button))
                 )
             }
         }
@@ -64,7 +72,7 @@ fun ResumeGameDialog(
 @Composable
 private fun NewGameButton(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Button(
         onClick = onClick,
@@ -78,7 +86,7 @@ private fun NewGameButton(
 @Composable
 private fun ResumeGameButton(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     OutlinedButton(
         onClick = onClick,

@@ -16,7 +16,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.codebythura.fruit2048.R
@@ -39,40 +41,42 @@ fun ActionsRow(
         NewGameButton(
             enabled = startNewGameEnabled,
             onClick = onStartNewGame,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .testTag(stringResource(R.string.new_game_button))
         )
         UndoGameButton(
             enabled = undoEnabled,
             onClick = onUndo,
-            modifier = Modifier
+            modifier = Modifier.testTag(stringResource(R.string.undo_btn))
         )
     }
 }
 
 @Composable
 fun UndoGameButton(
-    enabled: Boolean = true,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
     ActionButton(
         enabled = enabled,
         onClick = onClick,
+        contentPadding = PaddingValues(0.dp),
         modifier = modifier.size(buttonHeight),
-        contentPadding = PaddingValues(0.dp)
     ) {
         Icon(
             painter = painterResource(R.drawable.undo),
-            contentDescription = "Undo",
+            contentDescription = stringResource(R.string.undo),
         )
     }
 }
 
 @Composable
 fun NewGameButton(
-    enabled: Boolean = true,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
     ActionButton(
         enabled = enabled,
@@ -86,12 +90,13 @@ fun NewGameButton(
         ) {
             Icon(
                 painter = painterResource(R.drawable.restart),
-                contentDescription = "restart",
+                contentDescription = stringResource(R.string.restart),
             )
             Text(
-                text = "New Game",
+                text = stringResource(R.string.new_game),
                 color = MaterialTheme.colorScheme.onPrimary,
-                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
+                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }

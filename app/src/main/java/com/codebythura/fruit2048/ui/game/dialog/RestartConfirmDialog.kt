@@ -14,9 +14,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.codebythura.fruit2048.R
 import com.codebythura.fruit2048.data.AppConsts
 
 
@@ -29,6 +32,7 @@ fun RestartConfirmDialog(
     AppDialog(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
+                .testTag(stringResource(R.string.restart_confirm_dialog))
                 .fillMaxWidth()
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -50,11 +54,15 @@ fun RestartConfirmDialog(
             ) {
                 CancelButton(
                     onClick = onDismiss,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag(stringResource(R.string.cancel_button))
                 )
                 RestartButton(
                     onClick = onConfirm,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag(stringResource(R.string.confirm_button))
                 )
             }
         }
@@ -66,7 +74,7 @@ fun RestartConfirmDialog(
 @Composable
 private fun RestartButton(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Button(
         onClick = onClick,
@@ -80,7 +88,7 @@ private fun RestartButton(
 @Composable
 private fun CancelButton(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     OutlinedButton(
         onClick = onClick,

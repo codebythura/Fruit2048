@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -25,6 +26,7 @@ fun NewBestScoreDialog(
     AppDialog(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
+                .testTag(stringResource(R.string.new_best_score_dialog))
                 .fillMaxWidth()
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -44,7 +46,9 @@ fun NewBestScoreDialog(
             Button(
                 onClick = onDismiss,
                 shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(stringResource(R.string.dialog_close_button))
             ) {
                 Text("Close")
             }

@@ -13,7 +13,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,6 +35,7 @@ fun GameOverDialog(
     AppDialog(onDismissRequest = {}) {
         Column(
             modifier = Modifier
+                .testTag(stringResource(R.string.game_over_dialog))
                 .fillMaxWidth()
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -48,34 +51,13 @@ fun GameOverDialog(
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = 12.dp, bottom = 18.dp)
             )
-            TryAgainButton(onClick = onGameRestart)
+            TryAgainButton(
+                onClick = onGameRestart,
+                modifier = Modifier.testTag(stringResource(R.string.dialog_try_again_button))
+            )
         }
     }
 
-//    Dialog(onDismissRequest = {}) {
-//        Card(
-//            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
-//            shape = RoundedCornerShape(12.dp),
-//        ) {
-//            Column(
-//                modifier = Modifier.fillMaxWidth().padding(16.dp),
-//                horizontalAlignment = Alignment.CenterHorizontally,
-//            ) {
-//                Text(
-//                    text = "Game Over!",
-//                    textAlign = TextAlign.Center,
-//                    fontWeight = FontWeight.Bold,
-//                    style = MaterialTheme.typography.titleLarge,
-//                )
-//                Text(
-//                    text = "Final score: $score",
-//                    style = MaterialTheme.typography.bodyLarge,
-//                    modifier = Modifier.padding(top = 12.dp, bottom = 18.dp)
-//                )
-//                TryAgainButton(onClick = onGameRestart)
-//            }
-//        }
-//    }
 }
 
 @Composable
@@ -86,9 +68,10 @@ private fun TryAgainButton(
     Button(
         onClick = onClick,
         shape = RoundedCornerShape(AppConsts.defaultCornerRadius),
+        modifier = modifier,
     ) {
         Row(
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
         ) {
