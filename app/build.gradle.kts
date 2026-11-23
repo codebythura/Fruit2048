@@ -76,6 +76,9 @@ dependencies {
     testImplementation(libs.androidx.compose.ui.test.junit4)
     testImplementation(libs.androidx.compose.ui.test.manifest)
     testImplementation(libs.turbine)
+    testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.compiler)
+    testImplementation(libs.androidx.sqlite.bundled)
 
     androidTestImplementation(libs.androidx.sqlite.bundled)
     androidTestImplementation(libs.turbine)

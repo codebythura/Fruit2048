@@ -122,14 +122,14 @@ class GameViewModel @Inject constructor(
     fun onGameOverDialogDismiss() {
         viewModelScope.launch {
             dataStoreRepo.updateBestScore(gameEngine.gameState.value.score).let { updated ->
-                if(updated) { _dialogState.update { it.copy(showNewScoreDialog = true) } }
-                else { startNewGame() }
+                _dialogState.update { it.copy(showNewScoreDialog = updated) }
+                startNewGame(clearDialogs = false)
             }
         }
     }
 
     fun onNewScoreDialogDismiss() {
-        startNewGame()
+        _dialogState.update { it.copy(showNewScoreDialog = false) }
     }
 
     fun onRestartGameDialogDismiss() {
