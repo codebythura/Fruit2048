@@ -1,6 +1,5 @@
 package com.codebythura.fruit2048.repository
 
-import androidx.room.withTransaction
 import com.codebythura.fruit2048.database.AppDatabase
 import com.codebythura.fruit2048.database.GameStateEntity
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +18,7 @@ interface GameStateRepository {
     suspend fun getRowCount() : Int
 }
 
-class GameStateRepositoryImpl @Inject constructor(private val appDatabase: AppDatabase) : GameStateRepository {
+class GameStateRepositoryImpl @Inject constructor(appDatabase: AppDatabase) : GameStateRepository {
 
     val gameStateDao = appDatabase.gameStateDao
 
@@ -28,10 +27,7 @@ class GameStateRepositoryImpl @Inject constructor(private val appDatabase: AppDa
     override fun observeRowCount() = gameStateDao.observeRowCount().flowOn(Dispatchers.IO)
 
     override suspend fun onUndo() = withContext(Dispatchers.IO) {
-        appDatabase.withTransaction {
-            gameStateDao.deleteLatestState()
-            gameStateDao.getLatestState()
-        }
+        gameStateDao.deleteAndGetLatestState()
     }
 
     override suspend fun onResume() = withContext(Dispatchers.IO) { gameStateDao.getLatestState() }

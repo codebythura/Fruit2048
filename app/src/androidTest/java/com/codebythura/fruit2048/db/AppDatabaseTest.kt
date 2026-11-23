@@ -1,4 +1,4 @@
-package com.codebythura.fruit2048
+package com.codebythura.fruit2048.db
 
 
 import android.content.Context

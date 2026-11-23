@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
 
 
@@ -17,7 +18,13 @@ interface GameStateDao {
     fun getLatestState(): GameStateEntity?
 
     @Query("DELETE FROM game_state WHERE id = (SELECT MAX(id) FROM game_state)")
-    suspend fun deleteLatestState()
+    fun deleteLatestState()
+
+    @Transaction
+    suspend fun deleteAndGetLatestState(): GameStateEntity? {
+        deleteLatestState()
+        return getLatestState()
+    }
 
     @Query("SELECT COUNT(*) FROM game_state")
     fun observeRowCount(): Flow<Int>
