@@ -54,7 +54,7 @@ fun ResumeGameDialog(
                     onClick = onResume,
                     modifier = Modifier
                         .weight(1f)
-                        .testTag(stringResource(R.string.resume_game_button))
+                        .testTag(stringResource(R.string.dialog_resume_game_button))
                 )
                 NewGameButton(
                     onClick = onNewGame,

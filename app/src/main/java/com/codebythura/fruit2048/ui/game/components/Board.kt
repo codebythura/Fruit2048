@@ -115,7 +115,6 @@ private fun TileItem(
 
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
-    val shape = remember(cornerRadius) { RoundedCornerShape(cornerRadius) }
 
     val scale = remember { Animatable(if (tileData.shouldAnimate) 0f else 1f) }
     LaunchedEffect(tileData.id) {
@@ -142,6 +141,7 @@ private fun TileItem(
     val tile = getTile(tileData.value)
     val animatedColor by animateColorAsState(targetValue = tile.color)
     val animatedBorderColor by animateColorAsState(targetValue = tile.borderColor)
+    val shape = remember(cornerRadius) { RoundedCornerShape(cornerRadius) }
 
     Box(
         modifier =

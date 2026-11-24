@@ -69,6 +69,7 @@ class GameViewModel @Inject constructor(
         viewModelScope.launch {
             if(gameStateRepo.getRowCount() > 1) {
                 _dialogState.update { it.copy(showResumeGameDialog = true) }
+//                onResumeGameDialogDismiss()
             } else {
                 startNewGame(clearDialogs = false)
             }

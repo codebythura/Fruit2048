@@ -13,10 +13,11 @@
     <string name="cancel_button">Cancel Button</string>
     <string name="confirm_button">Confirm Button</string>
     <string name="game_resume_dialog">Game Resume Dialog</string>
-    <string name="resume_game_button">Resume Game Button</string>
+    <string name="dialog_resume_game_button">dialog_resume_game_button</string>
     <string name="dialog_new_game_button">Dialog New Game Button</string>
     <string name="new_best_score_dialog">New Best Score Dialog</string>
     <string name="dialog_close_button">Dialog Close Button</string>
     <string name="game_over_dialog">Game Over Dialog</string>
     <string name="dialog_try_again_button">Dialog Try Again Button</string>
+    <string name="title_2048">title_2048</string>
 </resources>

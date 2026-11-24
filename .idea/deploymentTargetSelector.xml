@@ -13,9 +13,20 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="GameScreenTest">
+      <SelectionState runConfigName="startup()">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-11-23T06:00:52.758635Z">
+        <DropdownSelection timestamp="2026-11-24T10:26:29.799643Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=0006314BA000556" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection />
+      </SelectionState>
+      <SelectionState runConfigName="swipe()">
+        <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2026-11-24T02:32:46.222266Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="PhysicalDevice" identifier="serial=648dd2a" />
@@ -24,9 +35,9 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="startGameAndCheckUndoAfterSwipes()">
+      <SelectionState runConfigName="main">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-11-23T06:00:52.758635Z">
+        <DropdownSelection timestamp="2026-11-24T02:32:46.222266Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="PhysicalDevice" identifier="serial=648dd2a" />
@@ -35,9 +46,9 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="cancelRestartConfirmDialogAndUndoEnabled()">
+      <SelectionState runConfigName="StartupBenchmark">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-11-23T06:00:52.758635Z">
+        <DropdownSelection timestamp="2026-11-24T02:32:46.222266Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="PhysicalDevice" identifier="serial=648dd2a" />
@@ -46,20 +57,9 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="checkBestScoreAndCurrentScoreDisplayed()">
+      <SelectionState runConfigName="SwipeBenchmark">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-11-23T06:00:52.758635Z">
-          <Target type="DEFAULT_BOOT">
-            <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=648dd2a" />
-            </handle>
-          </Target>
-        </DropdownSelection>
-        <DialogSelection />
-      </SelectionState>
-      <SelectionState runConfigName="confirmRestartConfirmDialogAndUndoDisabled()">
-        <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-11-23T06:00:52.758635Z">
+        <DropdownSelection timestamp="2026-11-24T02:32:46.222266Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="PhysicalDevice" identifier="serial=648dd2a" />

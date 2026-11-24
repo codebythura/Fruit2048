@@ -8,7 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import com.codebythura.fruit2048.R
 
 private val _lightColors = listOf(
     Color(0xFF08B928),
@@ -34,7 +37,8 @@ fun AppTitle(modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.displayMedium.copy(
                 fontWeight = FontWeight.Bold,
                 brush = Brush.linearGradient(colors),
-            )
+            ),
+            modifier = Modifier.testTag(stringResource(R.string.title_2048))
         )
         Text(
             text = "Fruit Edition!",

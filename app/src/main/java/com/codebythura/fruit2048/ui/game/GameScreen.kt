@@ -16,6 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -94,7 +97,6 @@ fun GameScreenContent(
                 onUndo = onUndo,
                 undoEnabled = state.undoEnabled,
                 modifier = Modifier
-                    .testTag(stringResource(R.string.game_content))
                     .fillMaxSize()
                     .padding(innerPadding)
                     .onSwipe(onSwipe = onSwipe)
@@ -103,6 +105,31 @@ fun GameScreenContent(
         }
     )
 
+}
+
+@Composable
+private fun GameContent(
+    score: Int,
+    bestScore: Int,
+    tileData: List<TileData>,
+    onUndo: () -> Unit,
+    onStartNewGame: () -> Unit,
+    undoEnabled: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.testTag(stringResource(R.string.game_content)),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        AppTitle()
+        ScoreRow(bestScore = bestScore, score = score)
+        ActionsRow(
+            undoEnabled = undoEnabled,
+            onUndo = onUndo,
+            onStartNewGame = onStartNewGame
+        )
+        Board(tileDataList = tileData)
+    }
 }
 
 @Composable
@@ -150,31 +177,6 @@ private fun GameDialogEffect(
             onResume = onResumeGameDialogDismiss,
             onNewGame = startNewGame
         )
-    }
-}
-
-@Composable
-private fun GameContent(
-    score: Int,
-    bestScore: Int,
-    tileData: List<TileData>,
-    onUndo: () -> Unit,
-    onStartNewGame: () -> Unit,
-    undoEnabled: Boolean,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        AppTitle()
-        ScoreRow(bestScore = bestScore, score = score)
-        ActionsRow(
-            undoEnabled = undoEnabled,
-            onUndo = onUndo,
-            onStartNewGame = onStartNewGame
-        )
-        Board(tileDataList = tileData)
     }
 }
 
