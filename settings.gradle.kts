@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "Fruit2048"
 include(":app")
 include(":macrobenchmark")
+include(":baselineprofile")

@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.serialization)
     alias(libs.plugins.protobuf)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.baselineprofile)
 }
 
 android {
@@ -76,6 +77,9 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
 
+    implementation(libs.androidx.profileinstaller)
+    "baselineProfile"(project(":baselineprofile"))
+
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.compose.ui.test.junit4)
@@ -113,4 +117,8 @@ protobuf {
             }
         }
     }
+}
+
+tasks.register("generateNonMinifiedReleaseBaselineProfile") {
+    dependsOn("generateReleaseBaselineProfile")
 }

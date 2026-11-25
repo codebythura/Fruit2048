@@ -70,6 +70,19 @@
             </AndroidTestResultsTableState>
           </value>
         </entry>
+        <entry key="-1304884837">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="OnePlus CPH2409" value="120" />
+                  <entry key="Tests" value="360" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
         <entry key="-504249240">
           <value>
             <AndroidTestResultsTableState>
